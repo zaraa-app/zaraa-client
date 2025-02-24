@@ -10,5 +10,5 @@
       "react": ["./node_modules/react"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", "prettier.config.js"]
 }

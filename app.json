@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Zaraa",
+    "slug": "zaraa",
+    "scheme": "zaraa",
+    "version": "1.0.0",
+    "newArchEnabled": true,
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "plugins": ["expo-router"]
+  }
+}
