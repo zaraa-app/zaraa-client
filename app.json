@@ -8,6 +8,12 @@
     "experiments": {
       "tsconfigPaths": true
     },
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6DBE45"
+    },
     "web": {
       "bundler": "metro",
       "output": "static"
@@ -16,7 +22,18 @@
     "userInterfaceStyle": "light",
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#6DBE45"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#6DBE45"
+      }
     },
     "plugins": ["expo-router"]
   }
