@@ -105,7 +105,7 @@ const SignUpView = () => {
     setIsSubmitting(true);
 
     try {
-      const result = createUser(accountDetails);
+      const result = await createUser(accountDetails);
 
       // TODO: set to global state.
 

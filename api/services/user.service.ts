@@ -17,11 +17,17 @@ export const createUser = async ({ email, name, password }: AccountDetails) => {
   try {
     const newAccount = await account.create(ID.unique(), email, password, name);
 
-    if (!newAccount) throw new Error("Account creation failed");
+    if (!newAccount || !newAccount.$id) {
+      throw new Error("Account creation failed or returned invalid data");
+    }
 
     const avatarUrl = avatars.getInitials(name);
 
-    await signUserIn({ email, password });
+    const session = await signUserIn({ email, password });
+
+    if (!session) {
+      throw new Error("Sign-in failed after account creation");
+    }
 
     const request: UserResponse = {
       name: name ?? "No Name",
@@ -49,8 +55,9 @@ export const createUser = async ({ email, name, password }: AccountDetails) => {
  */
 export const signUserIn = async ({ email, password }: AccountDetails) => {
   try {
-    const session = await account.createEmailPasswordSession(email, password);
+    return await account.createEmailPasswordSession(email, password);
   } catch (error: any) {
-    throw new Error(error.message);
+    console.error("Sign-in failed:", error);
+    return null;
   }
 };
