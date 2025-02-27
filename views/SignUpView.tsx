@@ -10,9 +10,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { AccountDetails } from "@/app/(auth)/sign-up";
 import { createUser } from "@/api/services/user.service";
 import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const SignUpView = () => {
   const passwordRequirements = ["Atleast 1 uppercase letter", "At least 1 number", "Atleast 8 characters"];
+
+  const { setUser, setIsLoggedIn } = useGlobalContext();
 
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     name: "",
@@ -106,8 +109,8 @@ const SignUpView = () => {
 
     try {
       const result = await createUser(accountDetails);
-
-      // TODO: set to global state.
+      setUser(result);
+      setIsLoggedIn(true);
 
       router.replace("/dashboard");
     } catch (error: any) {

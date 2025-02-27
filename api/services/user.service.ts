@@ -50,7 +50,6 @@ export const createUser = async ({ email, name, password }: AccountDetails) => {
 /**
  * Signs the user in with an email and password.
  * @param {AccountDetails} options - The email and password of the user.
- * @returns {Promise<void>} - Resolves if the user was signed in successfully.
  * @throws {Error} - If the user was not signed in successfully.
  */
 export const signUserIn = async ({ email, password }: AccountDetails) => {
@@ -59,5 +58,40 @@ export const signUserIn = async ({ email, password }: AccountDetails) => {
   } catch (error: any) {
     console.error("Sign-in failed:", error);
     return null;
+  }
+};
+
+/**
+ * Retrieves the current user's account information.
+ * @returns {Promise<UserResponse | null>} - The current user's data if successful, otherwise null.
+ * @throws {Error} - If there is no current account or user found.
+ */
+
+export const getCurrentUser = async () => {
+  try {
+    const currentAccount = await account.get();
+
+    if (!currentAccount) throw new Error("No current account found");
+
+    const currentUser = await databases.getDocument(config.databaseId, tableIds.users, currentAccount.$id);
+
+    if (!currentUser) throw new Error("No current user found");
+
+    return currentUser;
+  } catch (error: any) {
+    console.error("Error getting current user:", error);
+    return null;
+  }
+};
+
+/**
+ * Logs the user out by deleting their current sessions.
+ * @throws {Error} - If the logout process fails.
+ */
+export const logoutUser = async () => {
+  try {
+    await account.deleteSession("current");
+  } catch (error: any) {
+    console.error("Error logging out:", error);
   }
 };

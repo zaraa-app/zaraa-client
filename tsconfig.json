@@ -2,7 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "es2016"],
+    "lib": ["dom", "ES2024"],
     "jsx": "react-native",
     "module": "commonjs",
     "strict": true,
@@ -24,6 +24,7 @@
     "constants/Images.ts",
     "plugins/normalizePlugin.ts",
     "utils/normalize.ts",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    "context/GlobalProvider.js"
   ]
 }
