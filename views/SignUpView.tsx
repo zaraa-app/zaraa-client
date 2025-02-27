@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView, TextInput } from "react-native";
+import { View, Text, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
 import React, { useRef, useState } from "react";
 import ActionButton from "@/components/ActionButton";
 import FormField from "@/components/FormField";
@@ -7,33 +7,49 @@ import TextContent from "@/components/TextContent";
 import normalize from "@/utils/normalize";
 import styles from "@/utils/styles";
 import { Ionicons } from "@expo/vector-icons";
+import { AccountDetails } from "@/app/(auth)/sign-up";
+import { createUser } from "@/api/services/user.service";
+import { router } from "expo-router";
 
 const SignUpView = () => {
   const passwordRequirements = ["Atleast 1 uppercase letter", "At least 1 number", "Atleast 8 characters"];
 
-  const [accountDetails, setAccountDetails] = useState({
+  const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     name: "",
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmedPassword, setConfirmedPassword] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [confirmedPassword, setConfirmedPassword] = useState<string>("");
   const [passwordErrors, setPasswordErrors] = useState<string[] | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const confirmPasswordInputRef = useRef<TextInput>(null);
 
+  /**
+   * Handles the validation and updating of the password.
+   * @param newValue - The new password.
+   */
   function handleNewPassword(newValue: string) {
     setAccountDetails({ ...accountDetails, password: newValue });
     validatePassword(newValue);
   }
 
+  /**
+   * Handles checking the password if it matches.
+   * @param newValue - the confirmed password.
+   */
   function handlePasswordConfirmation(newValue: string) {
     setConfirmedPassword(newValue);
   }
 
+  /**
+   * Handles validating the password according to some rulesets.
+   * @param password - The password to check.
+   */
   function validatePassword(password: string) {
     const errors: string[] = [];
     if (password.length < 8) {
@@ -49,9 +65,56 @@ const SignUpView = () => {
     setPasswordErrors(errors);
   }
 
+  /**
+   * Checks if a specific password requirement is met.
+   *
+   * @param requirement - The password requirement to check.
+   * @returns - Returns `true` if the requirement is met, otherwise `false`.
+   */
   function isRequirementMet(requirement: string) {
     if (!passwordErrors) return false;
     return !passwordErrors.includes(requirement);
+  }
+
+  /**
+   * Handles the sign up flow.
+   */
+  async function handleSignUp() {
+    if (!accountDetails.name || !accountDetails.email || !accountDetails.password) {
+      Alert.alert("All fields are required");
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(accountDetails.email)) {
+      Alert.alert("Invalid email");
+      return;
+    }
+
+    if (passwordErrors?.length) {
+      Alert.alert("Password does not meet requirements");
+      return;
+    }
+
+    if (accountDetails.password !== confirmedPassword) {
+      Alert.alert("Passwords do not match");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const result = createUser(accountDetails);
+
+      // TODO: set to global state.
+
+      router.replace("/dashboard");
+    } catch (error: any) {
+      Alert.alert("Error creating user.", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -66,7 +129,7 @@ const SignUpView = () => {
             <FormField
               label="Name"
               placeholder="John Doe"
-              value={accountDetails.name}
+              value={accountDetails.name ?? ""}
               onValueChange={(newValue) => setAccountDetails({ ...accountDetails, name: newValue })}
               autoCapitalize="words"
               onSubmitEditing={() => emailInputRef.current?.focus()}
@@ -104,6 +167,7 @@ const SignUpView = () => {
                 ref={confirmPasswordInputRef}
                 placeholder="Confirm Password"
                 value={confirmedPassword}
+                showPassword={showPassword}
                 onValueChange={(newValue) => handlePasswordConfirmation(newValue)}
                 textContentType="oneTimeCode"
                 isPassword
@@ -139,7 +203,7 @@ const SignUpView = () => {
         <View style={[styles.gap2]}>
           <ActionButton
             title="Next"
-            onPress={() => console.log("test")}
+            onPress={handleSignUp}
             rightIcon={<Ionicons name="arrow-forward" color="white" size={normalize(20)} />}
           />
           <ActionButton

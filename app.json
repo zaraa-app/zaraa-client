@@ -33,7 +33,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#6DBE45"
-      }
+      },
+      "package": "com.htu.zaraa"
     },
     "plugins": ["expo-router"]
   }
