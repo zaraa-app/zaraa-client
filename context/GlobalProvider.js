@@ -27,7 +27,7 @@ const GlobalProvider = ({ children }) => {
         }
       })
       .catch((error) => {
-        console.error("Error getting current user:", error);
+        console.log("Error getting current user:", error);
       })
       .finally(() => {
         setIsLoading(false);
