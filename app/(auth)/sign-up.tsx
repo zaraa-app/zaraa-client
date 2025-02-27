@@ -1,10 +1,6 @@
 import SignUpView from "@/views/SignUpView";
 
 const SignUp = () => {
-  return (
-    <>
-      <SignUpView />;
-    </>
-  );
+  return <SignUpView />;
 };
 export default SignUp;

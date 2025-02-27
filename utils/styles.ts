@@ -248,6 +248,17 @@ const styles = {
   gap2: { gap: normalize(8) },
   gap3: { gap: normalize(12) },
   gap4: { gap: normalize(16) },
+  gap5: { gap: normalize(20) },
+  gap6: { gap: normalize(24) },
+  gap8: { gap: normalize(32) },
+  gap10: { gap: normalize(40) },
+  gap12: { gap: normalize(48) },
+  gap14: { gap: normalize(56) },
+  gap16: { gap: normalize(64) },
+  gap20: { gap: normalize(80) },
+  gap24: { gap: normalize(96) },
+  gap28: { gap: normalize(112) },
+  gap32: { gap: normalize(128) },
 
   // Leading
   leadingNone: { lineHeight: normalize(8) },

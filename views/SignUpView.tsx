@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import React, { useState } from "react";
 import ActionButton from "@/components/ActionButton";
 import FormField from "@/components/FormField";
@@ -52,77 +52,81 @@ const SignUpView = () => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="flex-1" style={[styles.p8]}>
-        <HeadingContent size="h5" heading="Let’s Get Growing! 🌱" />
-        <TextContent size="base" text="Create your own account" />
-        <View className="flex-1 justify-between " style={[styles.gap2, styles.pt8]}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={[styles.p8]} scrollEnabled={false}>
+        <View className="flex-1 justify-end" style={[styles.gap12]}>
           <View style={[styles.gap4]}>
-            <FormField
-              label="Name"
-              placeholder="John Doe"
-              value={accountDetails.name}
-              onValueChange={(newValue) => setAccountDetails({ ...accountDetails, name: newValue })}
-            />
-            <FormField
-              label="Email"
-              placeholder="johndoe@example.com"
-              value={accountDetails.email}
-              keyboardType="email-address"
-              onValueChange={(newValue) => setAccountDetails({ ...accountDetails, email: newValue })}
-            />
-            <View className="flex w-full" style={[styles.gap2]}>
+            <View>
+              <HeadingContent size="h5" heading="Let’s Get Growing! 🌱" />
+              <TextContent size="base" text="Create your own account." />
+            </View>
+            <View style={[styles.gap4]}>
               <FormField
-                label="Password"
-                placeholder="Password"
-                value={accountDetails.password}
-                showPassword={showPassword}
-                onValueChange={(newValue) => handleNewPassword(newValue)}
-                textContentType="password"
-                isPassword
-              >
-                <Ionicons
-                  name={!showPassword ? "eye" : "eye-off"}
-                  size={24}
-                  color="rgba(109, 190, 69, 1)"
-                  onPress={() => setShowPassword(!showPassword)}
-                  suppressHighlighting
-                />
-              </FormField>
-              <FormField
-                placeholder="Confirm Password"
-                value={confirmedPassword}
-                onValueChange={(newValue) => handlePasswordConfirmation(newValue)}
-                textContentType="none"
-                isPassword
+                label="Name"
+                placeholder="John Doe"
+                value={accountDetails.name}
+                onValueChange={(newValue) => setAccountDetails({ ...accountDetails, name: newValue })}
               />
-              <View className="flex w-full" style={[styles.gap2, styles.mt2]}>
-                {passwordRequirements.map((requirement, index) => (
-                  <View key={index} className="items-centers flex-row" style={[styles.gap1]}>
-                    <Ionicons
-                      name={
-                        !passwordErrors ? "information-circle"
-                        : isRequirementMet(requirement) ?
-                          "checkmark-circle-outline"
-                        : "close-circle-outline"
-                      }
-                      size={18}
-                      color={
-                        !passwordErrors ? "rgba(164, 164, 164, 1)"
-                        : isRequirementMet(requirement) ?
-                          "rgba(109,190,69,1)"
-                        : "red"
-                      }
-                    />
+              <FormField
+                label="Email"
+                placeholder="johndoe@example.com"
+                value={accountDetails.email}
+                keyboardType="email-address"
+                onValueChange={(newValue) => setAccountDetails({ ...accountDetails, email: newValue })}
+              />
+              <View className="flex w-full" style={[styles.gap2]}>
+                <FormField
+                  label="Password"
+                  placeholder="Password"
+                  value={accountDetails.password}
+                  showPassword={showPassword}
+                  onValueChange={(newValue) => handleNewPassword(newValue)}
+                  textContentType="oneTimeCode"
+                  isPassword
+                >
+                  <Ionicons
+                    name={!showPassword ? "eye" : "eye-off"}
+                    size={24}
+                    color="rgba(109, 190, 69, 1)"
+                    onPress={() => setShowPassword(!showPassword)}
+                    suppressHighlighting
+                  />
+                </FormField>
+                <FormField
+                  placeholder="Confirm Password"
+                  value={confirmedPassword}
+                  onValueChange={(newValue) => handlePasswordConfirmation(newValue)}
+                  textContentType="oneTimeCode"
+                  isPassword
+                />
+                <View className="flex w-full" style={[styles.gap2, styles.mt2]}>
+                  {passwordRequirements.map((requirement, index) => (
+                    <View key={index} className="items-centers flex-row" style={[styles.gap1]}>
+                      <Ionicons
+                        name={
+                          !passwordErrors ? "information-circle"
+                          : isRequirementMet(requirement) ?
+                            "checkmark-circle-outline"
+                          : "close-circle-outline"
+                        }
+                        size={18}
+                        color={
+                          !passwordErrors ? "rgba(164, 164, 164, 1)"
+                          : isRequirementMet(requirement) ?
+                            "rgba(109,190,69,1)"
+                          : "red"
+                        }
+                      />
 
-                    <Text style={[styles.textSm]} className="text-neutral-500">
-                      {requirement}
-                    </Text>
-                  </View>
-                ))}
+                      <Text style={[styles.textSm]} className="text-neutral-500">
+                        {requirement}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
-          <View className="" style={[styles.gap2]}>
+          <View style={[styles.gap2]}>
             <ActionButton
               title="Next"
               onPress={() => console.log("test")}
@@ -136,7 +140,7 @@ const SignUpView = () => {
             />
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

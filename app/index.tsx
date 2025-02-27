@@ -21,9 +21,9 @@ export default function Index() {
             <TextContent style={{ fontSize: normalize(16) }}>Discover the joy of nurturing plants, one leaf at a time!</TextContent>
           </View>
           <View className="flex w-full flex-row items-center justify-center" style={[styles.gap4]}>
-            <View className="h-4 w-4 rounded-full bg-primary-300"></View>
-            <View className="h-4 w-4 rounded-full bg-gray-200"></View>
-            <View className="h-4 w-4 rounded-full bg-gray-200"></View>
+            <View className="rounded-full bg-primary-300" style={{ height: normalize(12), width: normalize(12) }} />
+            <View className="rounded-full bg-gray-200" style={{ height: normalize(12), width: normalize(12) }} />
+            <View className="rounded-full bg-gray-200" style={{ height: normalize(12), width: normalize(12) }} />
           </View>
           <View className="flex w-full items-center justify-center gap-2">
             <ActionButton title="Start My Journey" onPress={() => router.push("/sign-up")} />

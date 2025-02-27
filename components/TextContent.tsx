@@ -8,9 +8,10 @@ interface TextContentProps {
   children?: React.ReactNode;
   text?: string;
   size?: "xs" | "2xs" | "3xs" | "base" | "sm" | "lg" | "xl";
+  onPress?: () => void;
 }
 
-const TextContent = ({ className, children, style, text, size = "base" }: TextContentProps) => {
+const TextContent = ({ className, children, style, text, onPress, size = "base" }: TextContentProps) => {
   let textStyle = [];
 
   switch (size) {
@@ -38,7 +39,7 @@ const TextContent = ({ className, children, style, text, size = "base" }: TextCo
   }
 
   return (
-    <Text style={[style, [...textStyle]]} className={`h-fit w-full font-inter ${className}`}>
+    <Text onPress={onPress} style={[style, [...textStyle]]} className={`h-fit font-inter ${className}`} suppressHighlighting>
       {children || text}
     </Text>
   );
