@@ -1,4 +1,4 @@
-import { View, SafeAreaView, ScrollView } from "react-native";
+import { View, SafeAreaView, ScrollView, Alert } from "react-native";
 import React, { useRef, useState } from "react";
 import ActionButton from "@/components/ActionButton";
 import FormField from "@/components/FormField";
@@ -8,14 +8,43 @@ import normalize from "@/utils/normalize";
 import styles from "@/utils/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
+import { AccountDetails } from "@/app/(auth)/sign-up";
+import { signUserIn } from "@/api/services/user.service";
+import { router } from "expo-router";
 
 const SignInView = () => {
-  const [accountDetails, setAccountDetails] = useState({
+  const [accountDetails, setAccountDetails] = useState<AccountDetails>({
     email: "",
     password: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const passwordInputRef = useRef<TextInput>(null);
+
+  /**
+   * Handles the sign in process.
+   */
+  async function handleSignIn() {
+    if (!accountDetails.email || !accountDetails.password) {
+      Alert.alert("All fields are required");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await signUserIn(accountDetails);
+
+      // TODO: Set Global Context
+
+      router.push("/dashboard");
+    } catch (error: any) {
+      Alert.alert("Error signing in", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -54,7 +83,7 @@ const SignInView = () => {
           </View>
         </View>
         <View style={[styles.gap2]}>
-          <ActionButton title="Sign In" onPress={() => console.log("test")} />
+          <ActionButton title="Sign In" onPress={handleSignIn} />
           <ActionButton
             title="Sign In with Google"
             onPress={() => console.log("test")}
