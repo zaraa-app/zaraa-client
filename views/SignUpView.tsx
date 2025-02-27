@@ -65,6 +65,7 @@ const SignUpView = () => {
                 placeholder="John Doe"
                 value={accountDetails.name}
                 onValueChange={(newValue) => setAccountDetails({ ...accountDetails, name: newValue })}
+                autoCapitalize="words"
               />
               <FormField
                 label="Email"
