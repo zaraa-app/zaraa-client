@@ -4,6 +4,7 @@ const TabsLayout = () => {
   return (
     <Tabs>
       <Tabs.Screen name="dashboard" options={{ headerShown: false }} />
+      <Tabs.Screen name="leaderboard" options={{ headerShown: false }} />
     </Tabs>
   );
 };
