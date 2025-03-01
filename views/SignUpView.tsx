@@ -8,7 +8,7 @@ import normalize from "@/utils/normalize";
 import styles from "@/utils/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { AccountDetails } from "@/app/(auth)/sign-up";
-import { createUser } from "@/api/services/user.service";
+import { authenticateWithGoogle, createUser, getCurrentUser } from "@/api/services/user.service";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalProvider";
 
@@ -120,9 +120,31 @@ const SignUpView = () => {
     }
   }
 
+  /**
+   * Handles the authentication process with Google and redirects to the dashboard.
+   * Redirects to the dashboard screen if successful.
+   * @throws {Error} - If there was an issue authenticating with Google.
+   */
+  async function handleAuthenticateWithGoogle() {
+    try {
+      const user = await authenticateWithGoogle();
+
+      if (!user) {
+        throw new Error("Failed to sign in with Google");
+      }
+
+      setUser(user);
+      setIsLoggedIn(true);
+
+      router.push("/dashboard");
+    } catch (error: any) {
+      Alert.alert("Error signing in with Google", error.message);
+    }
+  }
+
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={[styles.p8]} scrollEnabled={false}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={[styles.p8]}>
         <View className="flex-1 justify-start" style={[styles.gap4]}>
           <View>
             <HeadingContent size="h5" heading="Let’s Get Growing! 🌱" />
@@ -211,7 +233,7 @@ const SignUpView = () => {
           />
           <ActionButton
             title="Sign up with Google"
-            onPress={() => console.log("test")}
+            onPress={handleAuthenticateWithGoogle}
             leftIcon={<Ionicons name="logo-google" size={normalize(20)} color="rgba(109,190,69,1)" />}
             isOutline
           />
