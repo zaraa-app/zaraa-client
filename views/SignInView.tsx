@@ -9,8 +9,9 @@ import styles from "@/utils/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-gesture-handler";
 import { AccountDetails } from "@/app/(auth)/sign-up";
-import { signUserIn } from "@/api/services/user.service";
+import { getCurrentUser, signUserIn } from "@/api/services/user.service";
 import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const SignInView = () => {
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
@@ -18,6 +19,7 @@ const SignInView = () => {
     password: "",
   });
 
+  const { setUser, setIsLoggedIn } = useGlobalContext();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const passwordInputRef = useRef<TextInput>(null);
@@ -34,9 +36,20 @@ const SignInView = () => {
     setIsSubmitting(true);
 
     try {
-      await signUserIn(accountDetails);
+      const signInResponse = await signUserIn(accountDetails);
 
-      // TODO: Set Global Context
+      if (!signInResponse) {
+        throw new Error("Invalid email or password");
+      }
+
+      const currentUser = await getCurrentUser();
+
+      if (!currentUser) {
+        throw new Error("Failed to retrieve user data");
+      }
+
+      setUser(currentUser);
+      setIsLoggedIn(true);
 
       router.push("/dashboard");
     } catch (error: any) {

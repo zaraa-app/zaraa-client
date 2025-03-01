@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 
 import Images from "@/constants/Images";
 import TextContent from "@/components/TextContent";
@@ -9,8 +9,13 @@ import HeadingContent from "@/components/HeadingContent";
 import normalize from "@/utils/normalize";
 import styles from "@/utils/styles";
 import ActionButton from "@/components/ActionButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function Index() {
+  const { isLoading, isLoggedIn } = useGlobalContext();
+
+  if (!isLoading && isLoggedIn) return <Redirect href="/dashboard" />;
+
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView contentContainerStyle={{ height: "100%" }} scrollEnabled={false}>
