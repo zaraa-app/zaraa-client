@@ -4,6 +4,7 @@ import { logoutUser } from "@/api/services/user.service";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
+import { Link } from 'expo-router'
 
 const Dashboard = () => {
   const { setUser, setIsLoggedIn } = useGlobalContext();
@@ -27,6 +28,7 @@ const Dashboard = () => {
   return (
     <SafeAreaView>
       <ActionButton title="Logout" onPress={handleLogout} />
+      <Link href="/leaderboard" style={{marginTop: 20, color: 'blue'}}>Go to Leader Board</Link>
     </SafeAreaView>
   );
 };
