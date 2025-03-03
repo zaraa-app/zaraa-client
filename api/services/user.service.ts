@@ -42,7 +42,7 @@ export const createUser = async ({ email, name, password }: AccountDetails) => {
 
     return newUser;
   } catch (error: any) {
-    console.error("Error creating user:", error);
+    console.log("Error creating user:", error);
     throw new Error(error.message);
   }
 };
@@ -56,7 +56,7 @@ export const signUserIn = async ({ email, password }: AccountDetails) => {
   try {
     return await account.createEmailPasswordSession(email, password);
   } catch (error: any) {
-    console.error("Sign-in failed:", error);
+    console.log("Sign-in failed:", error);
     return null;
   }
 };
@@ -79,7 +79,7 @@ export const getCurrentUser = async () => {
 
     return currentUser;
   } catch (error: any) {
-    console.error("Error getting current user:", error);
+    console.log("Error getting current user:", error);
     return null;
   }
 };
@@ -92,6 +92,6 @@ export const logoutUser = async () => {
   try {
     await account.deleteSession("current");
   } catch (error: any) {
-    console.error("Error logging out:", error);
+    console.log("Error logging out:", error);
   }
 };

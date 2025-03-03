@@ -51,7 +51,7 @@ const SignInView = () => {
       setUser(currentUser);
       setIsLoggedIn(true);
 
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (error: any) {
       Alert.alert("Error signing in", error.message);
     } finally {
