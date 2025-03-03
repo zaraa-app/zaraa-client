@@ -11,10 +11,11 @@ export default function RootLayout() {
 
   return (
     <GlobalProvider>
-      <Stack>
-        <Stack.Screen options={{ headerShown: false }} name="(auth)" />
+      <Stack screenOptions={{ animation: "fade", animationDuration: 200 }}>
+        <Stack.Screen options={{ headerShown: false, animation: "slide_from_right", animationDuration: 200 }} name="(auth)" />
         <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
         <Stack.Screen options={{ headerShown: false }} name="index" />
+        <Stack.Screen options={{ headerShown: false, presentation: "fullScreenModal" }} name="all-set" />
       </Stack>
     </GlobalProvider>
   );
