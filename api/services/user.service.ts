@@ -29,7 +29,7 @@ export const createUser = async ({ email, name, password }: AccountDetails) => {
       throw new Error("Sign-in failed after account creation");
     }
 
-    const request: UserResponse = {
+    const request: UserResponse = <UserResponse>{
       name: name ?? "No Name",
       email,
       avatar: avatarUrl,

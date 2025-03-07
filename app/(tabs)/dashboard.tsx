@@ -17,9 +17,7 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView>
-      <View style={[styles.gap8]}>
-        <ActionButton title="All Set" onPress={() => router.replace("/all-set")} />
-      </View>
+      <View style={[styles.gap8]}></View>
     </SafeAreaView>
   );
 };
