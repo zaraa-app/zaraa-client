@@ -26,15 +26,16 @@ export const ChapterProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         if (!data || data.length === 0) throw new Error("No chapters found for this category");
 
-        setChapters(data);
+        const sortedChapters = data.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        setChapters(sortedChapters);
 
         const storedChapter = await AsyncStorage.getItem("selectedChapter");
         if (storedChapter) {
           const parsedChapter = JSON.parse(storedChapter);
-          const foundChapter = data.find((c) => c.$id === parsedChapter.$id);
-          setSelectedChapter(foundChapter || data[0]);
+          const foundChapter = sortedChapters.find((chapter) => chapter.$id === parsedChapter.$id);
+          setSelectedChapter(foundChapter || sortedChapters[0]);
         } else {
-          setSelectedChapter(data[0]);
+          setSelectedChapter(sortedChapters[0]);
         }
       } catch (error) {
         console.error("Error fetching chapters:", error);
