@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import ActionButton from "@/components/ActionButton";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
 import { View } from "react-native";
-import styles from "@/utils/styles";
+import TextContent from "@/components/TextContent";
+import { useCategory } from "@/context/CategoryContext";
+import ChapterSelect from "@/components/ChapterSelect";
 
 const Dashboard = () => {
   const { isLoggedIn } = useGlobalContext();
@@ -16,9 +16,9 @@ const Dashboard = () => {
   }, [isLoggedIn]);
 
   return (
-    <SafeAreaView>
-      <View style={[styles.gap8]}></View>
-    </SafeAreaView>
+    <View>
+      <ChapterSelect />
+    </View>
   );
 };
 
