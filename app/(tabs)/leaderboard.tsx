@@ -3,6 +3,7 @@ import { View, SafeAreaView, FlatList, Text, Image } from "react-native";
 import TopThreeLeaderboard from "@/components/topThreeLeaderBoard";
 import { UserResponse } from "@/api/types/user.types";
 import LeaderboardItem from "@/components/LeaderboardItem";
+import styles from "@/utils/styles";
 
 const Leaderboard = () => {
   const [users] = useState<UserResponse[]>([
@@ -78,12 +79,18 @@ const Leaderboard = () => {
 
   return (
     <View className="h-full w-full bg-white">
-      <FlatList
-        data={remainingUsers}
-        keyExtractor={(item) => item.$id}
-        renderItem={({ item, index }) => <LeaderboardItem rank={index + 4} name={item.name} xp={item.xp} avatar={item.avatar} />}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={[styles.p6]}>
+        <FlatList
+          data={remainingUsers}
+          keyExtractor={(item) => item.$id}
+          renderItem={({ item, index }) => (
+            <View style={index !== remainingUsers.length - 1 ? styles.mb2 : {}}>
+              <LeaderboardItem rank={index + 4} name={item.name} xp={item.xp} avatar={item.avatar} />
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };

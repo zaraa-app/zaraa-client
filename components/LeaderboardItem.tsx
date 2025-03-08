@@ -1,6 +1,8 @@
 import styles from "@/utils/styles";
 import React from "react";
 import { View, Text, Image } from "react-native";
+import TextContent from "./TextContent";
+import normalize from "@/utils/normalize";
 
 export interface LeaderBoardItemProps {
   rank: number;
@@ -11,18 +13,20 @@ export interface LeaderBoardItemProps {
 
 const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
   return (
-    <View className="w-full flex-row items-center justify-between rounded-2xl bg-secondary-100 p-4">
-      {/* Rank Number */}
-      <Text className="w-10 text-lg font-bold text-neutral-900">{rank}th</Text>
-
-      {/* Profile Section */}
-      <View className="w-full flex-row items-center justify-start" style={[styles.gap2]}>
-        <Image source={{ uri: avatar.toString() }} resizeMode="contain" className="h-8 w-8 rounded-full" />
-        <Text className="text-lg font-bold text-neutral-1000">{name}</Text>
+    <View className="flex-row items-center justify-between rounded-2xl bg-secondary-100" style={[styles.p3]}>
+      <View className="flex-row items-center" style={[styles.gap2]}>
+        <TextContent className="w-8 text-center text-lg text-neutral-1000">{rank}th</TextContent>
+        <View className="flex-row items-center justify-start" style={[styles.gap2]}>
+          <Image
+            source={{ uri: avatar.toString() }}
+            resizeMode="contain"
+            className="rounded-full"
+            style={{ height: normalize(32), width: normalize(32) }}
+          />
+          <TextContent className="items-center justify-center text-center text-lg font-bold text-neutral-1000">{name}</TextContent>
+        </View>
       </View>
-
-      {/* xp */}
-      <Text className="text-lg font-bold text-green-200">{xp}</Text>
+      <TextContent className=" text-lg font-bold text-primary-300">{xp}</TextContent>
     </View>
   );
 };

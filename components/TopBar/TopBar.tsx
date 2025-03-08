@@ -17,7 +17,7 @@ const TopBar = ({ pageType }: TopBarProps) => {
   const { user } = useGlobalContext();
 
   return (
-    <SafeAreaView edges={["top"]}>
+    <SafeAreaView edges={["top"]} style={{ backgroundColor: pageType === "leaderboard" ? "rgba(109, 190, 69, 1)" : "white" }}>
       <View style={[styles.px6, styles.pt4]} className="flex-row items-center justify-between">
         <View className="w-full flex-1 flex-row justify-start" style={[styles.gap2]}>
           {pageType != "dashboard" ?
