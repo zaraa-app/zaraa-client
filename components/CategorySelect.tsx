@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlantCategory } from "@/api/types/plantCategory.types";
 import { getCategories, getCategoryIcon } from "@/api/services/plantCategory.service";
 import { useCategory } from "@/context/CategoryContext";
+import { selectionAsync } from "expo-haptics";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const NUMBER_OF_ITEMS = 2.3;
@@ -68,6 +69,7 @@ const CategorySelect = () => {
    * Handles the press event to toggle the dropdown visibility.
    */
   const handlePress = () => {
+    selectionAsync();
     setIsVisible(!isVisible);
     rotation.value = withTiming(isVisible ? 0 : 180, { duration: ANIMATION_DURATION });
     dropdownHeight.value = withTiming(isVisible ? 0 : ITEM_SIZE * 2 + normalize(48), { duration: ANIMATION_DURATION });
@@ -78,6 +80,7 @@ const CategorySelect = () => {
    * @param category - The category to select
    */
   const handleCategorySelect = async (category: PlantCategorySelection) => {
+    selectionAsync();
     setSelectedCategory(category);
     setIsVisible(false);
     rotation.value = withTiming(isVisible ? 0 : 180, { duration: ANIMATION_DURATION });

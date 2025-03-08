@@ -7,6 +7,7 @@ import styles from "@/utils/styles";
 import TextContent from "./TextContent";
 import { Ionicons } from "@expo/vector-icons";
 import normalize from "@/utils/normalize";
+import { selectionAsync } from "expo-haptics";
 
 const SWIPE_THRESHOLD = 25;
 
@@ -54,6 +55,7 @@ const ChapterSelect = () => {
       newIndex -= 1;
     }
 
+    selectionAsync();
     setSelectedChapter(chapters[newIndex]);
     setCurrentIndex(newIndex);
     translateX.value = withSpring(0);
@@ -83,6 +85,7 @@ const ChapterSelect = () => {
    */
   function nextChapter() {
     if (currentIndex < chapters.length - 1) {
+      selectionAsync();
       setSelectedChapter(chapters[currentIndex + 1]);
       setCurrentIndex(currentIndex + 1);
     }
@@ -93,6 +96,7 @@ const ChapterSelect = () => {
    */
   function prevChapter() {
     if (currentIndex > 0) {
+      selectionAsync();
       setSelectedChapter(chapters[currentIndex - 1]);
       setCurrentIndex(currentIndex - 1);
     }

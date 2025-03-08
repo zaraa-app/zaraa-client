@@ -3,11 +3,17 @@ import React from "react";
 
 import "../global.css";
 import GlobalProvider from "@/context/GlobalProvider";
+import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   SplashScreen.hideAsync();
+
+  configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false,
+  });
 
   return (
     <GlobalProvider>

@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
 import { View } from "react-native";
-import TextContent from "@/components/TextContent";
-import { useCategory } from "@/context/CategoryContext";
 import ChapterSelect from "@/components/ChapterSelect";
+import LessonButton from "@/components/LessonButton";
+import { LessonStatus } from "@/api/types/userLessonProgress.types";
 
 const Dashboard = () => {
   const { isLoggedIn } = useGlobalContext();
@@ -18,6 +18,9 @@ const Dashboard = () => {
   return (
     <View>
       <ChapterSelect />
+      <View className="flex-1 items-center justify-center p-56">
+        <LessonButton status={LessonStatus.Completed} />
+      </View>
     </View>
   );
 };
