@@ -18,7 +18,7 @@ const AllSet = () => {
       <View className="w-full" style={[styles.px8, styles.gap8]}>
         <View>
           <HeadingContent size="h5" heading="You're All Set! 🎉" className="text-center text-white" />
-          <TextContent text="Your personalized plant journey starts now." className="text-white" />
+          <TextContent text="Your personalized plant journey starts now." className="text-center text-white" />
         </View>
         <ActionButton title="Explore Zaraa" intent="tertiary" onPress={() => router.replace("/dashboard")} />
       </View>
