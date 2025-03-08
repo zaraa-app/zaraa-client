@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 import React from "react";
 import Heart from "@/assets/icons/heart.svg";
 import Fire from "@/assets/icons/fire.svg";
@@ -17,7 +17,7 @@ const TopBar = ({ pageType }: TopBarProps) => {
   const { user } = useGlobalContext();
 
   return (
-    <SafeAreaView edges={["top"]}>
+    <SafeAreaView edges={["top"]} className={pageType === "leaderboard" ? "bg-primary-300" : ""}>
       <View style={[styles.px6, styles.pt4]} className="flex-row items-center justify-between">
         <View className="w-full flex-1 flex-row justify-start" style={[styles.gap2]}>
           {pageType != "dashboard" ?

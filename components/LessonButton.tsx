@@ -46,6 +46,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({ status = LessonStatus.Locke
       onPressOut={() => setIsPressed(false)}
       onPress={handlePress}
       activeOpacity={0.95}
+      style={{ height: normalize(88), width: normalize(88) }}
     >
       <LessonIcon height={normalize(88)} width={normalize(88)} />
     </TouchableOpacity>

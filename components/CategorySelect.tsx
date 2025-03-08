@@ -103,12 +103,12 @@ const CategorySelect = () => {
   }));
 
   return (
-    <View className="relative">
+    <View>
       {isLoading ? null : (
         <>
           <TouchableOpacity
             activeOpacity={0.9}
-            className="min-h-[48px] flex-row items-center justify-between rounded-full bg-neutral-1000"
+            className="min-h-[45px] flex-row items-center justify-between rounded-full bg-neutral-1000"
             style={[styles.px4, styles.py3, styles.gap2]}
             onPress={handlePress}
           >
