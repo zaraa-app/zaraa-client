@@ -1,34 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ActionButton from "@/components/ActionButton";
-import { logoutUser } from "@/api/services/user.service";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
-import { Link } from "expo-router";
+import { View } from "react-native";
+import styles from "@/utils/styles";
 
 const Dashboard = () => {
-  const { setUser, setIsLoggedIn } = useGlobalContext();
+  const { isLoggedIn } = useGlobalContext();
 
-  /**
-   * Handles the logout process. Logs out the user and catches any errors that may
-   * occur.
-   */
-  async function handleLogout() {
-    try {
-      await logoutUser();
-      setUser(null);
-      setIsLoggedIn(false);
-
-      router.push("/");
-    } catch (error: any) {
-      console.error("Error logging out:", error.message);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace("/");
     }
-  }
+  }, [isLoggedIn]);
 
   return (
     <SafeAreaView>
-      <ActionButton title="Logout" onPress={handleLogout} />
-      <Link href="/leaderboard" style={{marginTop: 20, color: 'blue'}}>Go to Leader Board</Link>
+      <View style={[styles.gap8]}></View>
     </SafeAreaView>
   );
 };

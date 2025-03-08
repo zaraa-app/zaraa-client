@@ -9,7 +9,7 @@ interface ActionButtonProps {
   leftIcon?: React.JSX.Element;
   rightIcon?: React.JSX.Element;
   disabled?: boolean;
-  intent?: "primary" | "secondary";
+  intent?: "primary" | "secondary" | "tertiary";
   isOutline?: boolean;
   className?: string;
   style?: object;
@@ -31,6 +31,7 @@ const ActionButton = ({
       intent: {
         primary: "bg-primary-300",
         secondary: "bg-secondary-300",
+        tertiary: "bg-white",
       },
       isOutline: {
         true: "bg-transparent border border-primary-300",
@@ -50,6 +51,7 @@ const ActionButton = ({
       intent: {
         primary: "text-white",
         secondary: "text-white",
+        tertiary: "text-secondary-500",
       },
       disabled: {
         true: "text-neutral-200",

@@ -112,7 +112,7 @@ const SignUpView = () => {
       setUser(result);
       setIsLoggedIn(true);
 
-      router.replace("/dashboard");
+      router.replace("/all-set");
     } catch (error: any) {
       Alert.alert("Error creating user.", error.message);
     } finally {
