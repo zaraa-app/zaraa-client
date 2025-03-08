@@ -8,6 +8,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-na
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlantCategory } from "@/api/types/plantCategory.types";
 import { getCategories, getCategoryIcon } from "@/api/services/plantCategory.service";
+import { useCategory } from "@/context/CategoryContext";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const NUMBER_OF_ITEMS = 2.3;
@@ -19,9 +20,9 @@ export interface PlantCategorySelection extends PlantCategory {
 }
 
 const CategorySelect = () => {
+  const { selectedCategory, setSelectedCategory } = useCategory();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [categories, setCategories] = useState<PlantCategorySelection[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<PlantCategorySelection>(categories[0]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const dropdownHeight = useSharedValue(0);
@@ -30,6 +31,8 @@ const CategorySelect = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        const storedCategory = await AsyncStorage.getItem("selectedCategory");
+
         const data = await getCategories();
         if (!data || data.length === 0) throw new Error("Failed to fetch categories");
 
@@ -40,14 +43,17 @@ const CategorySelect = () => {
 
         setCategories(mappedCategories);
 
-        const storedCategory = await AsyncStorage.getItem("selectedCategory");
         if (storedCategory) {
           const parsedCategory = JSON.parse(storedCategory);
-          const foundCategory = mappedCategories.find((cat) => cat.$id === parsedCategory.$id);
-          setSelectedCategory(foundCategory || mappedCategories[0]);
-        } else {
-          setSelectedCategory(mappedCategories[0]);
+          const validStoredCategory = mappedCategories.find((category) => category.$id === parsedCategory.$id);
+
+          if (validStoredCategory) {
+            setSelectedCategory(validStoredCategory);
+            return;
+          }
         }
+
+        setSelectedCategory(mappedCategories[0]);
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {
@@ -104,8 +110,8 @@ const CategorySelect = () => {
             onPress={handlePress}
           >
             <View className="flex-row items-center" style={[styles.gap2]}>
-              {selectedCategory.icon && React.createElement(selectedCategory.icon, { width: normalize(16), height: normalize(16) })}
-              <TextContent text={selectedCategory.name} size="base" className="font-bold text-white" />
+              {selectedCategory?.icon && React.createElement(selectedCategory?.icon, { width: normalize(16), height: normalize(16) })}
+              <TextContent text={selectedCategory?.name} size="base" className="font-bold text-white" />
             </View>
             <Animated.View style={animatedIconStyle}>
               <Ionicons name="chevron-down" color="white" size={normalize(18)} />
@@ -122,7 +128,7 @@ const CategorySelect = () => {
               numColumns={Math.floor(NUMBER_OF_ITEMS)}
               contentContainerStyle={{ alignItems: "center", paddingVertical: 8 }}
               renderItem={({ item }) => {
-                const isSelected = selectedCategory.$id === item.$id;
+                const isSelected = selectedCategory?.$id === item.$id;
                 const IconComponent = item.icon;
 
                 return (
