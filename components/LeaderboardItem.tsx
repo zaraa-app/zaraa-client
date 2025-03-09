@@ -15,7 +15,7 @@ const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
   return (
     <View className="flex-row items-center justify-between rounded-2xl bg-secondary-100" style={[styles.p3]}>
       <View className="flex-row items-center" style={[styles.gap2]}>
-        <TextContent className="w-8 text-center text-lg text-neutral-1000">{rank}th</TextContent>
+        <TextContent className="w-10 text-center text-lg text-neutral-1000">{rank}th</TextContent>
         <View className="flex-row items-center justify-start" style={[styles.gap2]}>
           <Image
             source={{ uri: avatar.toString() }}
