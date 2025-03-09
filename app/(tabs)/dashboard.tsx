@@ -8,6 +8,7 @@ import { ELessonStatus } from "@/api/types/userLessonProgress.types";
 import LessonInfo from "@/components/LessonInfo/LessonInfo";
 import styles from "@/utils/styles";
 import { ELessonDifficulty } from "@/api/types/lesson.types";
+import normalize from "@/utils/normalize";
 
 const Dashboard = () => {
   const { isLoggedIn } = useGlobalContext();
@@ -19,7 +20,7 @@ const Dashboard = () => {
   }, [isLoggedIn]);
 
   return (
-    <View className="flex-1" style={[styles.pb6]}>
+    <View className="flex-1" style={[styles.pb6, { marginBottom: normalize(92) }]}>
       <ChapterSelect />
       <View className="flex-1 flex-row items-center justify-center gap-4">
         <LessonButton status={ELessonStatus.Completed} />
