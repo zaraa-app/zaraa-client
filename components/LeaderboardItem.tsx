@@ -23,7 +23,7 @@ const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
             className="rounded-full"
             style={{ height: normalize(32), width: normalize(32) }}
           />
-          <TextContent className="items-center justify-center text-center text-lg font-bold text-neutral-1000">{name}</TextContent>
+          <TextContent className="items-center justify-center text-center text-lg font-semibold text-neutral-1000">{name}</TextContent>
         </View>
       </View>
       <TextContent className=" text-lg font-bold text-primary-300">{xp}</TextContent>
