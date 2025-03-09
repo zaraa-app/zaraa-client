@@ -9,10 +9,13 @@ import CompletedLessonPressed from "@/assets/icons/completed-lesson-pressed.svg"
 import { ELessonStatus } from "@/api/types/userLessonProgress.types";
 import * as Haptics from "expo-haptics";
 import normalize from "@/utils/normalize";
+import { LessonResponse } from "@/api/types/lesson.types";
 
 interface LessonButtonProps {
+  lesson: LessonResponse;
   status?: ELessonStatus;
   onPress?: () => void;
+  style?: object;
 }
 
 const lessonIcons = {
@@ -30,13 +33,13 @@ const lessonIcons = {
   },
 };
 
-const LessonButton: React.FC<LessonButtonProps> = ({ status = ELessonStatus.Locked, onPress }) => {
+const LessonButton: React.FC<LessonButtonProps> = ({ status = ELessonStatus.Locked, onPress, style }: LessonButtonProps) => {
   const [isPressed, setIsPressed] = useState(false);
 
   const LessonIcon = isPressed ? lessonIcons[status].pressed : lessonIcons[status].normal;
 
   const handlePress = () => {
-    Haptics.selectionAsync(); // Medium haptic feedback
+    Haptics.selectionAsync();
     if (onPress) onPress();
   };
 
@@ -46,7 +49,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({ status = ELessonStatus.Lock
       onPressOut={() => setIsPressed(false)}
       onPress={handlePress}
       activeOpacity={0.95}
-      style={{ height: normalize(88), width: normalize(88) }}
+      style={[{ height: normalize(88), width: normalize(88) }, style]}
     >
       <LessonIcon height={normalize(88)} width={normalize(88)} />
     </TouchableOpacity>
