@@ -1,8 +1,17 @@
-// @ts-nocheck
 import { getCurrentUser } from "@/api/services/user.service";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { UserResponse } from "@/api/types/user.types";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const GlobalContext = createContext();
+const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+
+interface GlobalContextType {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  user: UserResponse | null;
+  setUser: (user: any) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+}
 
 export const useGlobalContext = () => {
   const context = useContext(GlobalContext);
@@ -10,14 +19,15 @@ export const useGlobalContext = () => {
   return context;
 };
 
-const GlobalProvider = ({ children }) => {
+const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser()
-      .then((user) => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
         if (user) {
           setIsLoggedIn(true);
           setUser(user);
@@ -25,13 +35,14 @@ const GlobalProvider = ({ children }) => {
           setIsLoggedIn(false);
           setUser(null);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error getting current user:", error);
-      })
-      .finally(() => {
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+
+    fetchUser();
   }, []);
 
   return (

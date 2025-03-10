@@ -1,4 +1,5 @@
 import { Models } from "react-native-appwrite";
+import { ChapterResponse } from "./chapter.types";
 
 export enum ELessonDifficulty {
   Easy = "Easy",
@@ -12,5 +13,5 @@ export interface LessonResponse extends Models.Document {
   xpValue: number;
   difficulty: ELessonDifficulty;
   avgTime: number;
-  chapterId: string;
+  chapter: ChapterResponse;
 }
