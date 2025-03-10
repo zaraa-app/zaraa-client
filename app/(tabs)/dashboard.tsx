@@ -7,7 +7,7 @@ import LessonButton from "@/components/LessonButton";
 import { ELessonStatus, UserLessonProgressResponse } from "@/api/types/userLessonProgress.types";
 import LessonInfo from "@/components/LessonInfo/LessonInfo";
 import styles from "@/utils/styles";
-import { ELessonDifficulty, LessonResponse } from "@/api/types/lesson.types";
+import { LessonResponse } from "@/api/types/lesson.types";
 import normalize from "@/utils/normalize";
 import { useCategory } from "@/context/CategoryContext";
 import { getLessonsByCategory } from "@/api/services/lesson.service";
@@ -89,20 +89,22 @@ const Dashboard = () => {
           />
         ))}
       </ScrollView>
-      <LessonInfo
-        title={selectedLesson.title}
-        content={selectedLesson.content}
-        difficulty={selectedLesson.difficulty}
-        avgTime={selectedLesson.avgTime}
-        xpValue={selectedLesson.xpValue}
-        status={getLessonStatus(
-          selectedLesson.$id,
-          lessons.findIndex((l) => l.$id === selectedLesson.$id)
-        )}
-        onPress={() => {
-          console.error("Function not implemented.");
-        }}
-      />
+      {selectedLesson && (
+        <LessonInfo
+          title={selectedLesson.title}
+          content={selectedLesson.content}
+          difficulty={selectedLesson.difficulty}
+          avgTime={selectedLesson.avgTime}
+          xpValue={selectedLesson.xpValue}
+          status={getLessonStatus(
+            selectedLesson.$id,
+            lessons.findIndex((l) => l.$id === selectedLesson.$id)
+          )}
+          onPress={() => {
+            console.error("Function not implemented.");
+          }}
+        />
+      )}
     </View>
   );
 };

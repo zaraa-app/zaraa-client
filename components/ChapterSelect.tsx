@@ -134,7 +134,7 @@ const ChapterSelect = () => {
         >
           <GestureDetector gesture={swipeGesture}>
             <Animated.View className="items-center justify-center" style={[animatedStyle, styles.gap1]}>
-              <TextContent className="font-bold text-white">{`Chapter ${selectedChapter?.chapterNumber}`}</TextContent>
+              <TextContent className="font-bold text-white">{`Chapter ${selectedChapter?.index}`}</TextContent>
               <TextContent className="text-white">{selectedChapter ? selectedChapter.title : "Select Chapter"}</TextContent>
             </Animated.View>
           </GestureDetector>
