@@ -14,7 +14,7 @@ import { LessonResponse } from "@/api/types/lesson.types";
 interface LessonButtonProps {
   lesson: LessonResponse;
   status?: ELessonStatus;
-  onPress?: () => void;
+  onPress?: (lesson: LessonResponse) => void;
   style?: object;
 }
 
@@ -33,14 +33,14 @@ const lessonIcons = {
   },
 };
 
-const LessonButton: React.FC<LessonButtonProps> = ({ status = ELessonStatus.Locked, onPress, style }: LessonButtonProps) => {
+const LessonButton: React.FC<LessonButtonProps> = ({ lesson, status = ELessonStatus.Locked, onPress, style }: LessonButtonProps) => {
   const [isPressed, setIsPressed] = useState(false);
 
   const LessonIcon = isPressed ? lessonIcons[status].pressed : lessonIcons[status].normal;
 
   const handlePress = () => {
     Haptics.selectionAsync();
-    if (onPress) onPress();
+    if (onPress) onPress(lesson);
   };
 
   return (

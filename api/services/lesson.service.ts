@@ -36,7 +36,7 @@ export const getLessonsByCategory = async (categoryId: string): Promise<LessonRe
  */
 export const getLessonsByChapter = async (chapterId: string): Promise<LessonResponse[]> => {
   try {
-    const lessons = await databases.listDocuments(config.databaseId, tableIds.lessons, [Query.equal("chapterId", chapterId)]);
+    const lessons = await databases.listDocuments(config.databaseId, tableIds.lessons, [Query.equal("chapter", chapterId)]);
 
     if (!lessons || !lessons.documents) {
       return [];

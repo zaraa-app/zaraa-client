@@ -8,6 +8,7 @@ import LessonDetail from "./LessonDetail";
 import { ELessonDifficulty } from "@/api/types/lesson.types";
 import { ELessonStatus } from "@/api/types/userLessonProgress.types";
 import { cva } from "class-variance-authority";
+import { selectionAsync } from "expo-haptics";
 
 export interface LessonInfoProps {
   title: string;
@@ -35,7 +36,17 @@ const LessonInfo = ({ status, title, content, difficulty, avgTime, xpValue, onPr
       status: {
         [ELessonStatus.Completed]: "bg-primary-500",
         [ELessonStatus.InProgress]: "bg-secondary-500",
-        [ELessonStatus.Locked]: "bg-neutral-900",
+        [ELessonStatus.Locked]: "!bg-neutral-900",
+      },
+    },
+  });
+
+  const difficultyStyle = cva("font-bold", {
+    variants: {
+      difficulty: {
+        [ELessonDifficulty.Easy]: "text-primary-300",
+        [ELessonDifficulty.Medium]: "text-yellow-600",
+        [ELessonDifficulty.Hard]: "text-red-900",
       },
     },
   });
@@ -45,18 +56,24 @@ const LessonInfo = ({ status, title, content, difficulty, avgTime, xpValue, onPr
     : status === ELessonStatus.InProgress ? "Start Learning"
     : "Locked";
 
+  function handleOnPress() {
+    if (status === ELessonStatus.Locked || status === ELessonStatus.Completed) return;
+    selectionAsync();
+    onPress();
+  }
+
   return (
     <View style={[styles.px6]}>
       <View className={wrapperStyle({ status })} style={[styles.p4, { minHeight: normalize(200) }]}>
         <View>
           <TextContent className="font-bold text-white">{title}</TextContent>
-          <TextContent size="xs" className="italic text-white">
+          <TextContent numberOfLines={1} size="xs" className="italic text-white">
             {content}
           </TextContent>
         </View>
         <View className="flex-row items-center justify-between">
           <LessonDetail label="Difficulty">
-            <TextContent size="xs" className="font-bold text-primary-300">
+            <TextContent size="xs" className={difficultyStyle({ difficulty })}>
               {difficulty}
             </TextContent>
           </LessonDetail>
@@ -72,7 +89,7 @@ const LessonInfo = ({ status, title, content, difficulty, avgTime, xpValue, onPr
             </TextContent>
           </LessonDetail>
         </View>
-        <ActionButton title={buttonTitle} className={buttonStyle({ status })} onPress={onPress} />
+        <ActionButton title={buttonTitle} className={buttonStyle({ status })} onPress={handleOnPress} />
       </View>
     </View>
   );
