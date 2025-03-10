@@ -13,5 +13,6 @@ export interface LessonResponse extends Models.Document {
   xpValue: number;
   difficulty: ELessonDifficulty;
   avgTime: number;
+  index: number;
   chapter: ChapterResponse;
 }
