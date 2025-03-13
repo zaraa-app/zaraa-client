@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { LayoutChangeEvent, TouchableOpacity, View } from "react-native";
 import LockedLesson from "@/assets/icons/locked-lesson.svg";
 import LockedLessonPressed from "@/assets/icons/locked-lesson-pressed.svg";
 import InProgressLesson from "@/assets/icons/inprogress-lesson.svg";
@@ -15,6 +15,7 @@ interface LessonButtonProps {
   lesson: LessonResponse;
   status?: ELessonStatus;
   onPress?: (lesson: LessonResponse) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
   style?: object;
 }
 
@@ -33,7 +34,13 @@ const lessonIcons = {
   },
 };
 
-const LessonButton: React.FC<LessonButtonProps> = ({ lesson, status = ELessonStatus.Locked, onPress, style }: LessonButtonProps) => {
+const LessonButton: React.FC<LessonButtonProps> = ({
+  lesson,
+  status = ELessonStatus.Locked,
+  onPress,
+  onLayout,
+  style,
+}: LessonButtonProps) => {
   const [isPressed, setIsPressed] = useState(false);
 
   const LessonIcon = isPressed ? lessonIcons[status].pressed : lessonIcons[status].normal;
@@ -45,6 +52,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({ lesson, status = ELessonSta
 
   return (
     <TouchableOpacity
+      onLayout={onLayout}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       onPress={handlePress}

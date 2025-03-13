@@ -8,6 +8,7 @@ import TextContent from "./TextContent";
 import { Ionicons } from "@expo/vector-icons";
 import normalize from "@/utils/normalize";
 import { selectionAsync } from "expo-haptics";
+import { ChapterResponse } from "@/api/types/chapter.types";
 
 const SWIPE_THRESHOLD = 25;
 
@@ -24,7 +25,11 @@ const chapterColors = [
   "rgba(0, 191, 255, 1)", // Sky Blue
 ];
 
-const ChapterSelect = () => {
+interface ChapterSelectProps {
+  onSelect?: (chapter: ChapterResponse) => void;
+}
+
+const ChapterSelect = ({ onSelect }: ChapterSelectProps) => {
   const { chapters, selectedChapter, setSelectedChapter } = useChapter();
   const translateX = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -57,6 +62,7 @@ const ChapterSelect = () => {
 
     selectionAsync();
     setSelectedChapter(chapters[newIndex]);
+    if (onSelect) onSelect(chapters[newIndex]);
     setCurrentIndex(newIndex);
     translateX.value = withSpring(0);
   };
@@ -87,6 +93,7 @@ const ChapterSelect = () => {
     if (currentIndex < chapters.length - 1) {
       selectionAsync();
       setSelectedChapter(chapters[currentIndex + 1]);
+      if (onSelect) onSelect(chapters[currentIndex + 1]);
       setCurrentIndex(currentIndex + 1);
     }
   }
@@ -98,6 +105,7 @@ const ChapterSelect = () => {
     if (currentIndex > 0) {
       selectionAsync();
       setSelectedChapter(chapters[currentIndex - 1]);
+      if (onSelect) onSelect(chapters[currentIndex - 1]);
       setCurrentIndex(currentIndex - 1);
     }
   }
@@ -134,7 +142,7 @@ const ChapterSelect = () => {
         >
           <GestureDetector gesture={swipeGesture}>
             <Animated.View className="items-center justify-center" style={[animatedStyle, styles.gap1]}>
-              <TextContent className="font-bold text-white">{`Chapter ${selectedChapter?.chapterNumber}`}</TextContent>
+              <TextContent className="font-bold text-white">{`Chapter ${selectedChapter?.index}`}</TextContent>
               <TextContent className="text-white">{selectedChapter ? selectedChapter.title : "Select Chapter"}</TextContent>
             </Animated.View>
           </GestureDetector>

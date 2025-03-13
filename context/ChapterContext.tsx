@@ -26,7 +26,7 @@ export const ChapterProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         if (!data || data.length === 0) throw new Error("No chapters found for this category");
 
-        const sortedChapters = data.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        const sortedChapters = data.sort((a, b) => a.index - b.index);
         setChapters(sortedChapters);
 
         const storedChapter = await AsyncStorage.getItem("selectedChapter");
