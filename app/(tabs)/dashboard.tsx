@@ -70,14 +70,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!initialScrollDone.current && lessons.length > 0 && selectedChapter) {
-      const firstLesson = lessons.find(
-        (lesson) => lesson.chapter.$id === selectedChapter.$id
-      );
+      const firstLesson = lessons.find((lesson) => lesson.chapter.$id === selectedChapter.$id);
       if (firstLesson && lessonPositions.current[firstLesson.$id] !== undefined) {
         scrollViewRef.current?.scrollTo({
           x: lessonPositions.current[firstLesson.$id],
           animated: false, // no animation on initial load
         });
+        setSelectedLesson(firstLesson);
         initialScrollDone.current = true;
       }
     }
@@ -104,6 +103,7 @@ const Dashboard = () => {
           maxX = lessonX;
           newActiveChapter = chapter;
         }
+        setSelectedLesson(firstLesson);
       }
     });
 
@@ -121,6 +121,7 @@ const Dashboard = () => {
         x: lessonPositions.current[firstLesson.$id],
         animated: true,
       });
+      setSelectedLesson(firstLesson);
     }
     setSelectedChapter(chapter);
   };
