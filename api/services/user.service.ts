@@ -3,7 +3,6 @@ import { client, tableIds, config } from "../appwrite";
 import { Account, Avatars, Databases, ID } from "react-native-appwrite";
 import { UserResponse } from "../types/user.types";
 
-
 const databases: Databases = new Databases(client);
 const account: Account = new Account(client);
 const avatars: Avatars = new Avatars(client);
@@ -94,6 +93,68 @@ export const logoutUser = async () => {
     await account.deleteSession("current");
   } catch (error: any) {
     console.log("Error logging out:", error);
+  }
+};
+
+/**
+ * Increments the streak count for a user.
+ * @param {string} userId - The ID of the user whose streak is to be incremented.
+ * @returns {Promise<any>} - A promise that resolves to the updated user document if successful.
+ * @throws {Error} - If the user is not found or if there is an error incrementing the streak.
+ */
+export const incrementStreak = async (userId: string): Promise<UserResponse | undefined> => {
+  try {
+    const user = await databases.getDocument(config.databaseId, tableIds.users, userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const request: UserResponse = <UserResponse>{
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      hearts: user.hearts,
+      streak: user.streak + 1,
+      xp: user.xp,
+    };
+
+    const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, userId, request);
+
+    return updatedUser as UserResponse;
+  } catch (error: any) {
+    console.log("Error incrementing streak:", error);
+  }
+};
+
+/**
+ * Resets a user's streak to 0.
+ * @param {string} userId - The ID of the user whose streak is to be reset.
+ * @returns {Promise<UserResponse | undefined>} - A promise that resolves to the updated user document if successful.
+ * @throws {Error} - If the user is not found or if there is an error resetting the streak.
+ */
+export const resetStreak = async (userId: string): Promise<UserResponse | undefined> => {
+  try {
+    const user = await databases.getDocument(config.databaseId, tableIds.users, userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const request: UserResponse = <UserResponse>{
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      hearts: user.hearts,
+      streak: 0,
+      xp: user.xp,
+    };
+
+    const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, userId, request);
+
+    return updatedUser as UserResponse;
+  } catch (error: any) {
+    console.log("Error incrementing streak:", error);
   }
 };
 
