@@ -5,7 +5,7 @@ const TopThreeLeaderboard = ({ topThree }) => {
   if (!topThree || topThree.length < 3) return null; // Ensure at least 3 users exist
 
   return (
-    <View className="items-center rounded-b-3xl bg-primary-300 px-5 pt-8 pb-12">
+    <View className="items-center rounded-b-3xl bg-primary-300" style={{ paddingHorizontal: 20, paddingTop: 32, paddingBottom: 48, gap: 16 }} >
       {/* Leaderboard Title - Left-Aligned */}
       <Text className="mb-6 self-start text-3xl font-bold text-white">Leaderboard</Text>
 
