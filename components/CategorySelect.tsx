@@ -8,6 +8,8 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-na
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlantCategory } from "@/api/types/plantCategory.types";
 import { getCategories, getCategoryIcon } from "@/api/services/plantCategory.service";
+import { useCategory } from "@/context/CategoryContext";
+import { selectionAsync } from "expo-haptics";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const NUMBER_OF_ITEMS = 2.3;
@@ -19,9 +21,9 @@ export interface PlantCategorySelection extends PlantCategory {
 }
 
 const CategorySelect = () => {
+  const { selectedCategory, setSelectedCategory } = useCategory();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [categories, setCategories] = useState<PlantCategorySelection[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<PlantCategorySelection>(categories[0]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const dropdownHeight = useSharedValue(0);
@@ -30,6 +32,8 @@ const CategorySelect = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        const storedCategory = await AsyncStorage.getItem("selectedCategory");
+
         const data = await getCategories();
         if (!data || data.length === 0) throw new Error("Failed to fetch categories");
 
@@ -40,14 +44,17 @@ const CategorySelect = () => {
 
         setCategories(mappedCategories);
 
-        const storedCategory = await AsyncStorage.getItem("selectedCategory");
         if (storedCategory) {
           const parsedCategory = JSON.parse(storedCategory);
-          const foundCategory = mappedCategories.find((cat) => cat.$id === parsedCategory.$id);
-          setSelectedCategory(foundCategory || mappedCategories[0]);
-        } else {
-          setSelectedCategory(mappedCategories[0]);
+          const validStoredCategory = mappedCategories.find((category) => category.$id === parsedCategory.$id);
+
+          if (validStoredCategory) {
+            setSelectedCategory(validStoredCategory);
+            return;
+          }
         }
+
+        setSelectedCategory(mappedCategories[0]);
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {
@@ -62,6 +69,7 @@ const CategorySelect = () => {
    * Handles the press event to toggle the dropdown visibility.
    */
   const handlePress = () => {
+    selectionAsync();
     setIsVisible(!isVisible);
     rotation.value = withTiming(isVisible ? 0 : 180, { duration: ANIMATION_DURATION });
     dropdownHeight.value = withTiming(isVisible ? 0 : ITEM_SIZE * 2 + normalize(48), { duration: ANIMATION_DURATION });
@@ -72,6 +80,7 @@ const CategorySelect = () => {
    * @param category - The category to select
    */
   const handleCategorySelect = async (category: PlantCategorySelection) => {
+    selectionAsync();
     setSelectedCategory(category);
     setIsVisible(false);
     rotation.value = withTiming(isVisible ? 0 : 180, { duration: ANIMATION_DURATION });
@@ -94,18 +103,18 @@ const CategorySelect = () => {
   }));
 
   return (
-    <View className="relative">
+    <View>
       {isLoading ? null : (
         <>
           <TouchableOpacity
             activeOpacity={0.9}
-            className="min-h-[48px] flex-row items-center justify-between rounded-full bg-neutral-1000"
+            className="min-h-[45px] flex-row items-center justify-between rounded-full bg-neutral-1000"
             style={[styles.px4, styles.py3, styles.gap2]}
             onPress={handlePress}
           >
             <View className="flex-row items-center" style={[styles.gap2]}>
-              {selectedCategory.icon && React.createElement(selectedCategory.icon, { width: normalize(16), height: normalize(16) })}
-              <TextContent text={selectedCategory.name} size="base" className="font-bold text-white" />
+              {selectedCategory?.icon && React.createElement(selectedCategory?.icon, { width: normalize(16), height: normalize(16) })}
+              <TextContent text={selectedCategory?.name} size="base" className="font-bold text-white" />
             </View>
             <Animated.View style={animatedIconStyle}>
               <Ionicons name="chevron-down" color="white" size={normalize(18)} />
@@ -122,7 +131,7 @@ const CategorySelect = () => {
               numColumns={Math.floor(NUMBER_OF_ITEMS)}
               contentContainerStyle={{ alignItems: "center", paddingVertical: 8 }}
               renderItem={({ item }) => {
-                const isSelected = selectedCategory.$id === item.$id;
+                const isSelected = selectedCategory?.$id === item.$id;
                 const IconComponent = item.icon;
 
                 return (

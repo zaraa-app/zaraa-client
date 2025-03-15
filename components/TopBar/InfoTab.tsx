@@ -11,7 +11,7 @@ export interface InfoTabProps {
 const InfoTab = ({ content, icon }: InfoTabProps) => {
   return (
     <View
-      className="min-h-[48px] min-w-[64px] flex-row items-center justify-center rounded-full bg-neutral-1000"
+      className="min-h-[45px] min-w-[64px] flex-row items-center justify-center rounded-full bg-neutral-1000"
       style={[styles.px4, styles.py3, styles.gap1]}
     >
       {icon}
