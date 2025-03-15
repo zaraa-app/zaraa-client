@@ -26,7 +26,7 @@ const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
           <TextContent className="items-center justify-center text-center text-lg font-semibold text-neutral-1000">{name}</TextContent>
         </View>
       </View>
-      <TextContent className=" text-lg font-bold text-primary-300">{xp}</TextContent>
+      <TextContent className=" text-lg font-bold text-primary-300">{xp ?? "N/A"}</TextContent>
     </View>
   );
 };

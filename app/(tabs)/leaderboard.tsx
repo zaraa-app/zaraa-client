@@ -4,6 +4,7 @@ import TopThreeLeaderboard from "@/components/topThreeLeaderBoard";
 import LeaderboardItem from "@/components/LeaderboardItem";
 import { getAllUsers } from "@/api/services/user.service";
 import { UserResponse } from "@/api/types/user.types";
+import styles from "@/utils/styles";
 
 const Leaderboard = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -26,30 +27,25 @@ const Leaderboard = () => {
 
   return (
     <View className="flex-1 bg-white">
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6ABF4B" />
-          
-        </View>
-      ) : (
-        <ScrollView className="flex-1">
-          <TopThreeLeaderboard topThree={topThree} />
+      {/* Non-scrollable header */}
+      <View>
+        <TopThreeLeaderboard topThree={topThree} />
+      </View>
 
-          <View className="p-6">
-            <FlatList
-              data={remainingUsers}
-              keyExtractor={(item) => item.$id}
-              renderItem={({ item, index }) => (
-                <View className={index !== remainingUsers.length - 1 ? "mb-2" : ""}>
-                  <LeaderboardItem rank={index + 4} name={item.name} xp={item.xp} avatar={item.avatar} />
-                </View>
-              )}
-              scrollEnabled={true}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </ScrollView>
-      )}
+      {/* Scrollable leaderboard items */}
+      <View className="flex-1" style={[styles.px6]}>
+        <FlatList
+          data={remainingUsers}
+          style={[styles.pt4]}
+          keyExtractor={(item) => item.$id}
+          renderItem={({ item, index }) => (
+            <View className={index !== users.slice(3).length - 1 ? "mb-2" : ""}>
+              <LeaderboardItem rank={index + 4} name={item.name} xp={item.xp} avatar={item.avatar} />
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };
