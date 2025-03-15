@@ -1,6 +1,7 @@
+import { Models } from "react-native-appwrite";
 import { Language } from "../enums/Language.enum";
 
-export interface UserResponse {
+export interface UserResponse extends Models.Document {
   name: string;
   avatar: URL;
   email: string;

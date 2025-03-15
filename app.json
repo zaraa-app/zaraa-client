@@ -37,10 +37,5 @@
       "package": "com.htu.zaraa"
     },
     "plugins": ["expo-router"]
-  },
-  "doctor": {
-    "reactNativeDirectoryCheck": {
-      "listUnknownPackages": false
-    }
   }
 }

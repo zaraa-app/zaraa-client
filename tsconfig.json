@@ -16,15 +16,5 @@
       "react": ["./node_modules/react"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "nativewind-env.d.ts",
-    "prettier.config.js",
-    "constants/Images.ts",
-    "plugins/normalizePlugin.ts",
-    "utils/normalize.ts",
-    "tailwind.config.js",
-    "context/GlobalProvider.js"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", "declarations.d.ts", "prettier.config.js"]
 }
