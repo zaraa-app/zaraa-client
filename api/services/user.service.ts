@@ -3,6 +3,7 @@ import { client, tableIds, config } from "../appwrite";
 import { Account, Avatars, Databases, ID } from "react-native-appwrite";
 import { UserResponse } from "../types/user.types";
 
+
 const databases: Databases = new Databases(client);
 const account: Account = new Account(client);
 const avatars: Avatars = new Avatars(client);
@@ -93,5 +94,23 @@ export const logoutUser = async () => {
     await account.deleteSession("current");
   } catch (error: any) {
     console.log("Error logging out:", error);
+  }
+};
+
+/**
+ * Fetches and returns the top 20 users sorted by XP.
+ * @returns {Promise<UserResponse[]>} - An array of top 20 users.
+ */
+export const getAllUsers = async (): Promise<UserResponse[]> => {
+  try {
+    const response = await databases.listDocuments(config.databaseId, tableIds.users);
+
+    if (!response.documents.length) return [];
+
+    // Sort users by XP in descending order and return the top 20
+    return response.documents.sort((a, b) => b.xp - a.xp).slice(0, 20) as UserResponse[];
+  } catch (error: any) {
+    console.error("Error fetching users:", error);
+    return [];
   }
 };
