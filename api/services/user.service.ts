@@ -68,7 +68,7 @@ export const signUserIn = async ({ email, password }: AccountDetails) => {
  * @throws {Error} - If there is no current account or user found.
  */
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<UserResponse | null> => {
   try {
     const currentAccount = await account.get();
 
@@ -78,7 +78,7 @@ export const getCurrentUser = async () => {
 
     if (!currentUser) throw new Error("No current user found");
 
-    return currentUser;
+    return currentUser as UserResponse;
   } catch (error: any) {
     console.log("Error getting current user:", error);
     return null;
