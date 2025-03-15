@@ -2,6 +2,7 @@ import { AccountDetails } from "@/app/(auth)/sign-up";
 import { client, tableIds, config } from "../appwrite";
 import { Account, Avatars, Databases, ID } from "react-native-appwrite";
 import { UserResponse } from "../types/user.types";
+import * as Linking from "expo-linking";
 
 const databases: Databases = new Databases(client);
 const account: Account = new Account(client);
@@ -93,5 +94,14 @@ export const logoutUser = async () => {
     await account.deleteSession("current");
   } catch (error: any) {
     console.log("Error logging out:", error);
+  }
+};
+
+export const resetPassword = async (email: string) => {
+  try {
+    const redirectUrl = Linking.createURL("reset-password");
+    await account.createRecovery(email, redirectUrl);
+  } catch (error: any) {
+    console.log("Error resetting password:", error);
   }
 };

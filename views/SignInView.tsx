@@ -90,7 +90,7 @@ const SignInView = () => {
                 size="xs"
                 text="Reset Password"
                 className="text-blue-500 underline"
-                onPress={() => console.log("Implement me please.")}
+                onPress={() => router.push("/forgot-password")}
               />
             </View>
           </View>
