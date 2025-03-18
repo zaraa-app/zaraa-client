@@ -3,8 +3,8 @@ import React from "react";
 import normalize from "@/utils/normalize";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "@/utils/styles";
-import TextContent from "./TextContent";
-import TagLabel from "./TagLabel";
+import TextContent from "../TextContent";
+import TagLabel from "../TagLabel";
 import { ForumPostResponse } from "@/api/types/forumPost.types";
 
 export interface ForumPostProps {
@@ -80,7 +80,12 @@ const ForumPost = ({ forum }: ForumPostProps) => {
           <TagLabel label="Plant Care" />
         </View>
         <TextContent size="sm" className="font-bold" text="How often should I water my plant?" numberOfLines={2} />
-        <TextContent size="xs" text="I have a plant that needs water every 2-3 days. How often should I water it?" numberOfLines={3} />
+        <TextContent
+          size="2xs"
+          className="text-gray-700"
+          text="I have a plant that needs water every 2-3 days. How often should I water it?"
+          numberOfLines={3}
+        />
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center" style={[styles.gap1]}>
             <Image
