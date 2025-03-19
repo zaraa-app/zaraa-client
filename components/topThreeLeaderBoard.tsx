@@ -12,7 +12,7 @@ const TopThreeLeaderboard = ({ topThree }: { topThree: UserResponse[] }) => {
       <Text className="mb-6 self-start text-3xl font-bold text-white">Leaderboard</Text>
 
       {/* Top 3 Players */}
-      <View className="flex-row items-end justify-center gap-12">
+      <View className="w-full flex-row items-center justify-between" style={[styles.px2]}>
         {/* 2nd Place */}
         <View className="mb-20 items-center" style={[styles.gap1]}>
           <Text className="mt-1 text-xl font-bold text-white">2nd</Text>

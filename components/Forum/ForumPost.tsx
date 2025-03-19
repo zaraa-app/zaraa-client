@@ -73,19 +73,16 @@ const ForumPost = ({ forum }: ForumPostProps) => {
         className="h-full overflow-hidden rounded-md"
         resizeMode="cover"
       />
-      <View className="flex-1" style={[styles.gap2]}>
+      <View className="flex-1 justify-between" style={[styles.gap2]}>
         <View className="flex-row" style={[styles.gap1]}>
           <TagLabel label="Plant Care" />
           <TagLabel label="Plant Care" />
           <TagLabel label="Plant Care" />
         </View>
-        <TextContent size="sm" className="font-bold" text="How often should I water my plant?" numberOfLines={2} />
-        <TextContent
-          size="2xs"
-          className="text-gray-700"
-          text="I have a plant that needs water every 2-3 days. How often should I water it?"
-          numberOfLines={3}
-        />
+        <View className="flex-1">
+          <TextContent size="sm" className="font-bold" text={forum.title} numberOfLines={2} />
+          <TextContent size="2xs" className="text-gray-700" text={forum.body} numberOfLines={3} />
+        </View>
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center" style={[styles.gap1]}>
             <Image
