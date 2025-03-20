@@ -1,4 +1,4 @@
-import { View, Image } from "react-native";
+import { View, Image, FlatList } from "react-native";
 import React from "react";
 import normalize from "@/utils/normalize";
 import { Ionicons } from "@expo/vector-icons";
@@ -54,30 +54,23 @@ export const relativeDate = (date: string | Date) => {
 const ForumPost = ({ forum }: ForumPostProps) => {
   return (
     <View
-      style={[{ minHeight: normalize(140), maxHeight: normalize(200) }, styles.px3, styles.py4, styles.gap3]}
+      style={[{ minHeight: normalize(140), maxHeight: normalize(200) }, styles.p3, styles.gap3]}
       className="flex-row rounded-3xl bg-secondary-100"
     >
-      <View className="justify-between">
-        <View style={[styles.gap2]} className="items-center justify-center">
-          <TextContent size="xs" text={"12"} />
-          <Ionicons name="arrow-up" size={16} />
-        </View>
-        <View style={[styles.gap2]} className="items-center justify-center">
-          <Ionicons name="arrow-down" size={16} />
-          <TextContent size="xs" text={"12"} />
-        </View>
-      </View>
       <Image
         src={"https://picsum.photos/536/354"}
         style={[{ width: normalize(88) }]}
-        className="h-full overflow-hidden rounded-md"
+        className="h-full overflow-hidden rounded-xl"
         resizeMode="cover"
       />
       <View className="flex-1 justify-between" style={[styles.gap2]}>
         <View className="flex-row" style={[styles.gap1]}>
-          <TagLabel label="Plant Care" />
-          <TagLabel label="Plant Care" />
-          <TagLabel label="Plant Care" />
+          <FlatList
+            data={forum.tags}
+            renderItem={({ item }) => <TagLabel label={item.name} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
         <View className="flex-1">
           <TextContent size="sm" className="font-bold" text={forum.title} numberOfLines={2} />
