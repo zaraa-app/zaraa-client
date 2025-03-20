@@ -16,6 +16,8 @@ import {
   APPWRITE_LESSON_QUESTIONS_TABLE_ID,
   APPWRITE_QUESTION_OPTIONS_TABLE_ID,
   APPWRITE_USER_DAILY_ACTIVITY_TABLE_ID,
+  APPWRITE_FORUM_TAGS_TABLE_ID,
+  APPWRITE_TAGS_TABLE_ID,
 } from "@env";
 
 export const config = {
@@ -38,6 +40,8 @@ export const tableIds = {
   lessonQuestions: APPWRITE_LESSON_QUESTIONS_TABLE_ID,
   questionOptions: APPWRITE_QUESTION_OPTIONS_TABLE_ID,
   userDailyActivity: APPWRITE_USER_DAILY_ACTIVITY_TABLE_ID,
+  forumTags: APPWRITE_FORUM_TAGS_TABLE_ID,
+  tags: APPWRITE_TAGS_TABLE_ID,
 };
 
 export let client: Client = new Client();
