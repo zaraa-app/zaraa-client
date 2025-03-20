@@ -15,6 +15,5 @@ declare module "@env" {
   export const APPWRITE_LESSON_QUESTIONS_TABLE_ID: string;
   export const APPWRITE_QUESTION_OPTIONS_TABLE_ID: string;
   export const APPWRITE_USER_DAILY_ACTIVITY_TABLE_ID: string;
-  export const APPWRITE_FORUM_TAGS_TABLE_ID: string;
   export const APPWRITE_TAGS_TABLE_ID: string;
 }
