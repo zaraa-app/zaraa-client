@@ -26,8 +26,24 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false);
   const [isCountryModalVisible, setIsCountryModalVisible] = useState(false);
 
-  const countryList = ["United States", "Austria", "Germany", "France", "Spain", "Italy", "United Kingdom", "Canada", "Jordan"]; // tried using this as value={countryList[n]} 
+  const countries = {
+    US: "United States",
+    AT: "Austria",
+    DE: "Germany",
+    FR: "France",
+    ES: "Spain",
+    IT: "Italy",
+    UK: "United Kingdom",
+    CA: "Canada",
+    JO: "Jordan",
+  };
+
   const [selectedCountry, setSelectedCountry] = useState(user?.country || "United States");
+  console.log("Test");
+  
+  console.log(user?.country);
+
+  console.log(user?.name);
 
   useEffect(() => {
     if (!user) return;
@@ -165,28 +181,26 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
             </TouchableOpacity>
           </View>
 
-
             {/* Country Picker Modal */}
             <Modal isVisible={isCountryModalVisible} onBackdropPress={() => setIsCountryModalVisible(false)}>
             <View className="bg-white p-6 rounded-lg">
                 {/* Country Picker */}
                 <Picker
-                selectedValue={selectedCountry}
-                onValueChange={(itemValue) => setSelectedCountry(itemValue)} // Store the selection
+                selectedValue={updatedUser.country} onValueChange={(itemValue) => handleInputChange("country", itemValue)} 
                 >
-                <Picker.Item label="United States" value="United States" />
-                <Picker.Item label="Germany" value="Germany" />
-                <Picker.Item label="France" value="France" />
-                <Picker.Item label="Italy" value="Italy" />
-                <Picker.Item label="Spain" value="Spain" />
-                <Picker.Item label="Jordan" value="Jordan" />
-                <Picker.Item label="Austria" value="Austria" />
+                <Picker.Item label="United States" value={countries.US} />
+                <Picker.Item label="Germany" value={countries.DE} />
+                <Picker.Item label="France" value={countries.FR} />
+                <Picker.Item label="Italy" value={countries.IT} />
+                <Picker.Item label="Spain" value={countries.ES} />
+                <Picker.Item label="Jordan" value={countries.JO} />
+                <Picker.Item label="Austria" value={countries.AT} />
                 </Picker>
 
                 {/* Select Button */}
                 <TouchableOpacity
                 onPress={() => {
-                    handleInputChange("country", selectedCountry); // Update updatedUser.country
+                    handleInputChange("country", updatedUser.country); 
                     setIsCountryModalVisible(false); // Close modal
                 }}
                 className="mt-4 p-3 bg-blue-500 rounded-lg items-center"
@@ -201,8 +215,7 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
             <View className="bg-white p-6 rounded-lg">
                 {/* Language Picker */}
                 <Picker
-                selectedValue={updatedUser.language}
-                onValueChange={(itemValue) => handleInputChange("language", itemValue)} // Temporarily store selection
+                selectedValue={updatedUser.language} onValueChange={(itemValue) => handleInputChange("language", itemValue)} // Temporarily store selection
                 >
                 <Picker.Item label="English" value={Language.English} />
                 <Picker.Item label="Arabic" value={Language.Arabic} />
@@ -211,7 +224,7 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
                 {/* Select Button */}
                 <TouchableOpacity
                 onPress={() => {
-                    handleInputChange("language", updatedUser.language); // Update updatedUser.language
+                    handleInputChange("language", updatedUser.language); 
                     setLanguageModalVisible(false); // Close modal
                 }}
                 className="mt-4 p-3 bg-blue-500 rounded-lg items-center"

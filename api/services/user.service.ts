@@ -192,6 +192,7 @@ export const updateUser = async (existingUser: UserResponse, newUser: UserRespon
       hearts: existingUser.hearts,
       streak: existingUser.streak,
       preferences: existingUser.preferences,
+      country: newUser.country || existingUser.country,
     };
 
     const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, existingUser.$id, updatedUserPayload);
