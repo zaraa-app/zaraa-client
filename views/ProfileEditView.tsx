@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Alert, ActivityIndicator, ScrollView, TouchableOpacity, Text, Image, SafeAreaView } from "react-native";
+import { Picker } from "@react-native-picker/picker"; // Importing Picker
 import * as ImagePicker from "expo-image-picker";
 import FormField from "@/components/FormField";
 import ActionButton from "@/components/ActionButton";
@@ -8,7 +9,10 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import { UserResponse } from "@/api/types/user.types";
 import { uploadImage } from "@/api/services/storage.service";
 import { updateUser } from "@/api/services/user.service";
-import Modal from "react-native-modal"; 
+import Modal from "react-native-modal";
+import { Ionicons } from "@expo/vector-icons";
+import styles from "@/utils/styles";
+import { Language } from "@/api/enums/ELanguage.enum";
 
 interface ProfileEditViewProps {
   onClose: () => void;
@@ -20,6 +24,10 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false);
+  const [isCountryModalVisible, setIsCountryModalVisible] = useState(false);
+
+  const countryList = ["United States", "Austria", "Germany", "France", "Spain", "Italy", "United Kingdom", "Canada", "Jordan"]; // tried using this as value={countryList[n]} 
+  const [selectedCountry, setSelectedCountry] = useState(user?.country || "United States");
 
   useEffect(() => {
     if (!user) return;
@@ -36,8 +44,9 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const updatedProfile = await updateUser(updatedUser);
+      if (!user) throw new Error("User not found");
 
+      const updatedProfile = await updateUser(user, updatedUser);
       if (!updatedProfile) throw new Error("Failed to update profile");
 
       setUser(updatedProfile);
@@ -55,16 +64,16 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
     try {
       let result: ImagePicker.ImagePickerResult = await (fromCamera
         ? ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+            mediaTypes: "images",
             allowsEditing: true,
             quality: 1,
           })
         : ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+            mediaTypes: "images",
             allowsEditing: true,
             quality: 1,
           }));
-  
+
       if (!result.canceled && result.assets.length > 0) {
         setUploading(true);
         const image = result.assets[0];
@@ -84,12 +93,10 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
         };
 
         const response = await uploadImage(fileRequest);
-
         if (!response) {
           console.error("Error uploading image to Appwrite");
           return;
         }
-
         setUpdatedUser({ ...updatedUser, avatar: response });
       }
     } catch (error) {
@@ -111,7 +118,7 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="h-full w-full bg-white">
-        <View className="flex items-center p-6 pt-12">
+        <View className="flex items-center p-6">
           {/* Editable Profile Picture */}
           <TouchableOpacity onPress={() => pickImage(false)} className="relative mb-6">
             <View className="h-32 w-32 items-center justify-center rounded-full bg-primary-alpha-10">
@@ -132,8 +139,8 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
             </View>
           </TouchableOpacity>
 
-          {/* Form Fields */} 
-          <View className="w-full max-w-lg" style={{ gap: 8 }}> 
+          {/* Form Fields */}
+          <View className="w-full max-w-lg" style={[styles.gap4]}>
             <FormField label="Name" value={updatedUser.name} onValueChange={(value) => handleInputChange("name", value)} />
             <FormField
               label="Phone number"
@@ -141,49 +148,82 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
               onValueChange={(value) => handleInputChange("phoneNumber", parseInt(value || "0"))}
               keyboardType="phone-pad"
             />
-            <FormField
-              label="Email"
-              value={updatedUser.email}
-              onValueChange={(value) => handleInputChange("email", value)}
-              keyboardType="email-address"
-            />
-            <FormField label="Country" value={updatedUser.country || ""} onValueChange={(value) => handleInputChange("country", value)} />
-            <FormField
-              label="Date of Birth"
-              value={updatedUser.dateOfBirth || ""}
-              onValueChange={(value) => handleInputChange("dateOfBirth", value)}
-            />
+            <FormField label="Email" value={updatedUser.email} onValueChange={(value) => handleInputChange("email", value)} keyboardType="email-address" />
 
-            {/* Language Dropdown Button */}
-            <TouchableOpacity onPress={() => setLanguageModalVisible(true)} className="w-full rounded-lg border border-neutral-300 p-4">
-              <Text className="text-lg text-neutral-900">{updatedUser.language}</Text>
+            {/* Country Picker */}
+            <TouchableOpacity onPress={() => setIsCountryModalVisible(true)} activeOpacity={0.7}>
+              <View pointerEvents="none">
+                <FormField label="Country" value={updatedUser.country || "Select a country..."} onValueChange={() => {}} />
+              </View>
+            </TouchableOpacity>
+
+            {/* Language Picker */}
+            <TouchableOpacity onPress={() => setLanguageModalVisible(true)} activeOpacity={0.7}>
+              <View pointerEvents="none">
+                <FormField label="Language" value={updatedUser.language || "Select a language..."} onValueChange={() => {}} />
+              </View>
             </TouchableOpacity>
           </View>
 
-          {/* Language Selection Modal */}
-          <Modal isVisible={isLanguageModalVisible} onBackdropPress={() => setLanguageModalVisible(false)} className="flex items-center justify-center">
-            <View className="w-full max-w-lg rounded-lg bg-white p-6">
-              <Text className="mb-4 text-center text-lg font-bold text-neutral-900">Select Language</Text>
-              <TouchableOpacity onPress={() => handleInputChange("language", "English")} className="w-full items-center p-4">
-                <Text>English</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleInputChange("language", "Arabic")} className="w-full items-center p-4">
-                <Text>Arabic</Text>
-              </TouchableOpacity>
+
+            {/* Country Picker Modal */}
+            <Modal isVisible={isCountryModalVisible} onBackdropPress={() => setIsCountryModalVisible(false)}>
+            <View className="bg-white p-6 rounded-lg">
+                {/* Country Picker */}
+                <Picker
+                selectedValue={selectedCountry}
+                onValueChange={(itemValue) => setSelectedCountry(itemValue)} // Store the selection
+                >
+                <Picker.Item label="United States" value="United States" />
+                <Picker.Item label="Germany" value="Germany" />
+                <Picker.Item label="France" value="France" />
+                <Picker.Item label="Italy" value="Italy" />
+                <Picker.Item label="Spain" value="Spain" />
+                <Picker.Item label="Jordan" value="Jordan" />
+                <Picker.Item label="Austria" value="Austria" />
+                </Picker>
+
+                {/* Select Button */}
+                <TouchableOpacity
+                onPress={() => {
+                    handleInputChange("country", selectedCountry); // Update updatedUser.country
+                    setIsCountryModalVisible(false); // Close modal
+                }}
+                className="mt-4 p-3 bg-blue-500 rounded-lg items-center"
+                >
+                <Text className="text-white font-bold">Select</Text>
+                </TouchableOpacity>
             </View>
-          </Modal>
+            </Modal>
+
+            {/* Language Modal */}
+            <Modal isVisible={isLanguageModalVisible} onBackdropPress={() => setLanguageModalVisible(false)}>
+            <View className="bg-white p-6 rounded-lg">
+                {/* Language Picker */}
+                <Picker
+                selectedValue={updatedUser.language}
+                onValueChange={(itemValue) => handleInputChange("language", itemValue)} // Temporarily store selection
+                >
+                <Picker.Item label="English" value={Language.English} />
+                <Picker.Item label="Arabic" value={Language.Arabic} />
+                </Picker>
+
+                {/* Select Button */}
+                <TouchableOpacity
+                onPress={() => {
+                    handleInputChange("language", updatedUser.language); // Update updatedUser.language
+                    setLanguageModalVisible(false); // Close modal
+                }}
+                className="mt-4 p-3 bg-blue-500 rounded-lg items-center"
+                >
+                <Text className="text-white font-bold">Select</Text>
+                </TouchableOpacity>
+            </View>
+            </Modal>
 
           {/* Save Button */}
           <ActionButton title={uploading ? "Uploading..." : "Save Changes"} onPress={handleSave} className="mb-4 mt-10 w-full max-w-lg p-5" disabled={uploading} />
-
-          {/* 🔙 Back Button */}
-          <TouchableOpacity
-            onPress={onClose} // Calls the onClose function to go back
-            className="w-full max-w-lg items-center p-4 rounded-lg bg-gray-300"
-          >
-            <Text className="text-lg text-gray-700">Back</Text>
-          </TouchableOpacity>
-
+          <ActionButton title="Back" onPress={onClose} intent="tertiary" />
         </View>
       </ScrollView>
     </SafeAreaView>

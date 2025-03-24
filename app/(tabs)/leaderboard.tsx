@@ -1,25 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, ScrollView } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, FlatList } from "react-native";
 import TopThreeLeaderboard from "@/components/topThreeLeaderBoard";
 import LeaderboardItem from "@/components/LeaderboardItem";
 import { getAllUsers } from "@/api/services/user.service";
 import { UserResponse } from "@/api/types/user.types";
 import styles from "@/utils/styles";
+import { useFocusEffect } from "expo-router";
 
 const Leaderboard = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch users from the service
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const userData = await getAllUsers();
-      setUsers(userData);
-      setLoading(false);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-    fetchUsers();
-  }, []);
+      const fetchUsers = async () => {
+        setLoading(true);
+        try {
+          const userData = await getAllUsers();
+          if (isActive) {
+            setUsers(userData);
+          }
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      };
+
+      fetchUsers();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
 
   // Sort users and separate top three
   const topThree = users.slice(0, 3);

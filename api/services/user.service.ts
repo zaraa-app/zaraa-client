@@ -2,7 +2,7 @@ import { AccountDetails } from "@/app/(auth)/sign-up";
 import { client, tableIds, config } from "../appwrite";
 import { Account, Avatars, Databases, ID } from "react-native-appwrite";
 import { UserResponse } from "../types/user.types";
-import { Language } from "../enums/Language.enum";
+import { Language } from "../enums/ELanguage.enum";
 
 const databases: Databases = new Databases(client);
 const account: Account = new Account(client);
@@ -177,32 +177,24 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
   }
 };
 
-export const updateUser = async (user: UserResponse): Promise<UserResponse | null> => {
+export const updateUser = async (existingUser: UserResponse, newUser: UserResponse): Promise<UserResponse | null> => {
   try {
-    if (!user.$id) throw new Error("User ID is required");
+    if (!existingUser.$id) throw new Error("User ID is required");
 
-    // Construct the full update payload with proper types
-    const updatedUserPayload: Partial<UserResponse> = {
-      name: user.name,
-      avatar: user.avatar,
-      email: user.email,
-      phoneNumber: user.phoneNumber ? user.phoneNumber.toString() : "", // Convert to string
-      country: user.country || "",
-      dateOfBirth: user.dateOfBirth || "",
-      language: user.language ?? Language.English, // Ensure enum usage
-      xp: user.xp || 0,
-      hearts: user.hearts || 5,
-      streak: user.streak || 0,
-      preferences: user.preferences || [],
+    const updatedUserPayload: UserResponse = <UserResponse>{
+      name: newUser.name || existingUser.name,
+      avatar: newUser.avatar || existingUser.avatar,
+      email: newUser.email || existingUser.email,
+      phoneNumber: newUser.phoneNumber ? newUser.phoneNumber.toString() : existingUser.phoneNumber,
+      dateOfBirth: newUser.dateOfBirth || existingUser.dateOfBirth,
+      language: newUser.language || existingUser.language,
+      xp: existingUser.xp,
+      hearts: existingUser.hearts,
+      streak: existingUser.streak,
+      preferences: existingUser.preferences,
     };
-    
 
-    const updatedUser = await databases.updateDocument(
-      config.databaseId,
-      tableIds.users,
-      user.$id,
-      updatedUserPayload
-    );
+    const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, existingUser.$id, updatedUserPayload);
 
     return updatedUser as UserResponse;
   } catch (error: any) {

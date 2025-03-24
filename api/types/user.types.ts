@@ -1,5 +1,5 @@
 import { Models } from "react-native-appwrite";
-import { Language } from "../enums/Language.enum";
+import { ELanguage } from "../enums/Language.enum";
 
 export interface UserResponse extends Models.Document {
   name: string;
@@ -8,7 +8,7 @@ export interface UserResponse extends Models.Document {
   phoneNumber?: string;
   country?: string;
   dateOfBirth?: string;
-  language?: Language;
+  language?: ELanguage;
   xp: number;
   hearts: number;
   streak: number;
