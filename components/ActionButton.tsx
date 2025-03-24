@@ -51,7 +51,7 @@ const ActionButton = ({
       intent: {
         primary: "text-white",
         secondary: "text-white",
-        tertiary: "text-secondary-500",
+        tertiary: "text-neutral-900",
       },
       disabled: {
         true: "text-neutral-200",
