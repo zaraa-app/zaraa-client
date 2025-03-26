@@ -1,4 +1,4 @@
-import { Animated, FlatList, RefreshControl, TouchableOpacity, View } from "react-native";
+import { Animated, FlatList, Modal, RefreshControl, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import ForumPost from "@/components/Forum/ForumPost";
 import { ForumPostResponse } from "@/api/types/forumPost.types";
@@ -14,6 +14,7 @@ import PageLoader from "@/components/PageLoader/PageLoader";
 import { getAllForumPosts } from "@/api/services/forumPost.service";
 import { TagResponse } from "@/api/types/tag.types";
 import { getAllTags } from "@/api/services/tag.service";
+import CreateForumView from "@/views/CreateForumView";
 
 const Forums = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -25,6 +26,7 @@ const Forums = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -102,11 +104,14 @@ const Forums = () => {
             className="flex-row items-center justify-center"
             style={[styles.gap1]}
             activeOpacity={0.7}
-            onPress={() => router.push("/(tabs)/forums/create")}
+            onPress={() => setIsVisible(true)}
           >
             <Ionicons name="add" size={normalize(14)} />
             <TextContent text="Create Post" size="sm" />
           </TouchableOpacity>
+          <Modal visible={isVisible} animationType="slide">
+            <CreateForumView toggleVisibility={setIsVisible} />
+          </Modal>
         </View>
         <View style={[styles.px6]}>
           <ForumSearch value={searchQuery} onValueChange={setSearchQuery} />

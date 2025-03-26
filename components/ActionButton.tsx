@@ -10,9 +10,11 @@ interface ActionButtonProps {
   rightIcon?: React.JSX.Element;
   disabled?: boolean;
   intent?: "primary" | "secondary" | "tertiary";
+  fullWidth?: boolean;
   isOutline?: boolean;
   className?: string;
   style?: object;
+  textSize?: object;
 }
 
 const ActionButton = ({
@@ -21,12 +23,14 @@ const ActionButton = ({
   disabled = false,
   intent = "primary",
   isOutline = false,
+  fullWidth = true,
   leftIcon,
   rightIcon,
   className,
   style,
+  textSize = styles.textBase,
 }: ActionButtonProps) => {
-  const buttonClasses = cva("rounded-full w-full items-center", {
+  const buttonClasses = cva("rounded-full items-center", {
     variants: {
       intent: {
         primary: "bg-primary-300",
@@ -39,6 +43,9 @@ const ActionButton = ({
       },
       disabled: {
         true: "!bg-neutral-400",
+      },
+      fullWidth: {
+        true: "w-full",
       },
     },
   });
@@ -75,13 +82,13 @@ const ActionButton = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className={`${buttonClasses({ intent, isOutline, disabled })} ${className}`}
+      className={`${buttonClasses({ intent, isOutline, disabled, fullWidth })} ${className}`}
       style={[style, styles.p4]}
       activeOpacity={0.9}
     >
       <View className="flex-row items-center" style={[styles.gap2]}>
         {leftIcon}
-        <Text className={textClasses({ intent, isOutline, disabled })} style={styles.textBase}>
+        <Text className={textClasses({ intent, isOutline, disabled })} style={textSize}>
           {title}
         </Text>
         {rightIcon}
