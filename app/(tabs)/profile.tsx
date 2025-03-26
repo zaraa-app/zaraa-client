@@ -4,6 +4,7 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
+import AnswerOption from "@/components/QuizComponents/AnswerOption";
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -83,6 +84,13 @@ const ProfileScreen: React.FC = () => {
           </View>
         </View>
       </View>
+
+          <Text>Testing for AnswerOption</Text>
+
+          <AnswerOption letter="A" text="Moist and clay-like soil" isCorrect={true} />
+          <AnswerOption letter="B" text="Dry and sandy soil" isCorrect={false} />
+
+          
 
       {/* Profile Edit Modal */}
       <Modal visible={isEditing} animationType="slide">
