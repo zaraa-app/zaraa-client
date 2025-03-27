@@ -1,36 +1,78 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faCircle as faSolidCircle,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faCircle as faRegularCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 
 interface AnswerOptionProps {
   letter: string;
   text: string;
   isCorrect: boolean;
+  selected: boolean;
+  checked: boolean;
+  onPress: () => void;
 }
 
-const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect }) => {
-  const [selected, setSelected] = useState(false);
+const AnswerOption: React.FC<AnswerOptionProps> = ({
+  letter,
+  text,
+  isCorrect,
+  selected,
+  checked,
+  onPress,
+}) => {
+  const getBackgroundColor = () => {
+    if (checked && selected) {
+      return isCorrect ? "#6BBE51" : "#D5001B"; // green or red after check
+    }
+    if (selected) {
+      return "#D7CFBC"; // highlighted on select
+    }
+    return "#F4F1EC"; // default
+  };
 
-  const handlePress = () => {
-    setSelected(true);
+  const getTextColor = () => {
+    if (checked && selected) return "#FFFFFF";
+    return "#000000";
+  };
+
+  const getIcon = () => {
+    if (checked && selected) {
+      return isCorrect ? faCheckCircle : faTimesCircle;
+    }
+    return selected ? faSolidCircle : faRegularCircle;
+  };
+
+  const getIconColor = () => {
+    if (checked && selected) {
+      return "#FFFFFF";
+    }
+    return selected ? "#B29F79" : "#0D355B";
   };
 
   return (
     <TouchableOpacity
-    onPress={handlePress}
-    className={`flex-row items-center p-4 rounded-xl w-full mb-3 ${
-      selected ? (isCorrect ? "bg-primary-300" : "bg-red-500") : ""
-    }`}
-    style={{ backgroundColor: selected ? (isCorrect ? "#6BBE51" : "#D5001B") : "#F4F1EC" }} // Updated color
+      onPress={onPress}
+      activeOpacity={0.8}
+      className="flex-row items-center justify-between p-4 rounded-xl w-full mb-3"
+      style={{ backgroundColor: getBackgroundColor() }}
     >
-    <FontAwesome6
-      name={selected ? (isCorrect ? "check-circle" : "times-circle") : "circle"}
-      size={20}
-      color={selected ? "#FFFFFF" : "#0D355B"} // White when selected, Dark Blue when not
-      style={{ marginRight: 12 }} // Adds spacing
-    />
-      <Text className={`font-bold mr-4 ${selected ? "text-white" : "text-black"}`}>{letter}</Text>
-      <Text className={`flex-1 ${selected ? "text-white" : "text-black"}`}>{text}</Text>
+      {/* Left: Letter + Text */}
+      <View className="flex-row items-center flex-1">
+        <Text className="font-bold mr-4" style={{ color: getTextColor() }}>
+          {letter}
+        </Text>
+        <Text style={{ color: getTextColor() }}>{text}</Text>
+      </View>
+
+      {/* Right: Icon */}
+      <View className="ml-2">
+        <FontAwesomeIcon icon={getIcon()} size={20} color={getIconColor()} />
+      </View>
     </TouchableOpacity>
   );
 };
