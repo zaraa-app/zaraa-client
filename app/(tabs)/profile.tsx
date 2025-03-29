@@ -6,6 +6,8 @@ import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
 import AnswerOption from "@/components/QuizComponents/AnswerOption";
 import QuizView from "@/views/QuizView";
+import FlashcardOption from "@/components/QuizComponents/FlashcardOption";
+
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -42,6 +44,8 @@ const ProfileScreen: React.FC = () => {
     );
   }
 
+const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+const [checked, setChecked] = useState(false); // only if you're checking correctness later
   return (
     <View className="flex-1 bg-white p-6 items-center">
       {/* Profile Section */}
@@ -86,7 +90,24 @@ const ProfileScreen: React.FC = () => {
         </View>
       </View>
 
-          <QuizView></QuizView>
+      <View className="mt-6 w-full items-center">
+      <Text className="text-lg font-semibold text-black mb-2">Flashcard Option Test</Text>
+      <View className="w-full flex-row flex-wrap justify-between gap-y-4">
+        {["a", "b"].map((id) => (
+          <FlashcardOption
+            key={id}
+            id={id}
+            letter={id.toUpperCase()}
+            isSelected={selectedCardId === id}
+            isCorrect={id === "a"} // Example: only A is correct
+            checked={checked}
+            imageUrl="https://cloud.appwrite.io/v1/storage/buckets/67ba2f92002293adf476/files/67e00915003bb57b7fac/view?project=67b1bbcc0022177a6ca9&mode=admin"
+            onPress={() => setSelectedCardId(id)}
+          />
+        ))}
+      </View>
+    </View>
+
 
       {/* Profile Edit Modal */}
       <Modal visible={isEditing} animationType="slide">
