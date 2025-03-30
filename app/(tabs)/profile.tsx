@@ -4,6 +4,7 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
+import UserActivityCalendar from "@/components/Profile/UserActivityCalendar";
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -83,6 +84,11 @@ const ProfileScreen: React.FC = () => {
           </View>
         </View>
       </View>
+
+      {/* 🚀 Add the calendar below this */}
+        <View className="w-full mt-6">
+          <UserActivityCalendar />
+        </View>
 
       {/* Profile Edit Modal */}
       <Modal visible={isEditing} animationType="slide">
