@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameMonth } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameMonth, addDays } from "date-fns";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import normalize from "@/utils/normalize";
 import FireIcon from "@/assets/icons/fire.svg";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { getUserDailyActivity } from "@/api/services/userDailyActivity.service";
+import { selectionAsync } from "expo-haptics";
 
 const Weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
@@ -13,10 +15,8 @@ const StreakCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeDates, setActiveDates] = useState<Set<string>>(new Set());
   const [streakDates, setStreakDates] = useState<Set<string>>(new Set());
-  const [streakGroups, setStreakGroups] = useState<string[][]>([]);
   const { user } = useGlobalContext();
 
-  // ⏳ Load streak and login activity from Appwrite
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -30,9 +30,8 @@ const StreakCalendar = () => {
       const sorted = loginDates.map((d) => new Date(d)).sort((a, b) => a.getTime() - b.getTime());
 
       const streakSet = new Set<string>();
-      const streakGroups: string[][] = [];
-
       let temp: string[] = [];
+
       for (let i = 0; i < sorted.length; i++) {
         const cur = sorted[i];
         const next = sorted[i + 1];
@@ -40,22 +39,33 @@ const StreakCalendar = () => {
 
         temp.push(key);
 
-        if (!next || (next.getTime() - cur.getTime()) / (1000 * 3600 * 24) !== 1) {
+        const isConsecutive = next && (next.getTime() - cur.getTime()) / (1000 * 3600 * 24) === 1;
+        if (!isConsecutive) {
           if (temp.length >= 3) {
             temp.forEach((d) => streakSet.add(d));
-            streakGroups.push([...temp]);
           }
           temp = [];
         }
       }
 
       setStreakDates(streakSet);
-      setStreakGroups(streakGroups);
     })();
   }, [user]);
 
-  // 🗓️ Build calendar
-  const { weeks, dayMap } = useMemo(() => {
+  const onSwipe = ({ nativeEvent }: any) => {
+    if (nativeEvent.state === State.END) {
+      const { translationX } = nativeEvent;
+      if (translationX > 50) {
+        selectionAsync();
+        setCurrentDate((prev) => subMonths(prev, 1));
+      } else if (translationX < -50) {
+        selectionAsync();
+        setCurrentDate((prev) => addMonths(prev, 1));
+      }
+    }
+  };
+
+  const { weeks } = useMemo(() => {
     const allDays = eachDayOfInterval({
       start: startOfMonth(currentDate),
       end: endOfMonth(currentDate),
@@ -66,111 +76,99 @@ const StreakCalendar = () => {
     while (paddedDays.length % 7 !== 0) paddedDays.push(null);
 
     const weeks: (Date | null)[][] = [];
-    const dayMap: { [key: string]: { row: number; col: number } } = {};
-
     for (let i = 0; i < paddedDays.length; i += 7) {
-      const week = paddedDays.slice(i, i + 7);
-      weeks.push(week);
-
-      week.forEach((day, col) => {
-        if (day) {
-          dayMap[format(day, "yyyy-MM-dd")] = { row: i / 7, col };
-        }
-      });
+      weeks.push(paddedDays.slice(i, i + 7));
     }
 
-    return { weeks, dayMap };
+    return { weeks };
   }, [currentDate]);
 
-  // 📦 Group streaks by row
-  const pillsByRow: { [row: number]: { left: number; width: number }[] } = useMemo(() => {
-    const map: { [row: number]: { left: number; width: number }[] } = {};
-
-    for (const group of streakGroups) {
-      const rowGroups: { [row: number]: number[] } = {};
-
-      for (const day of group) {
-        const pos = dayMap[day];
-        if (!pos) continue;
-
-        if (!rowGroups[pos.row]) rowGroups[pos.row] = [];
-        rowGroups[pos.row].push(pos.col);
-      }
-
-      for (const row in rowGroups) {
-        const cols = rowGroups[row].sort((a, b) => a - b);
-        const left = cols[0];
-        const width = cols.length;
-
-        if (!map[+row]) map[+row] = [];
-        map[+row].push({ left, width });
-      }
-    }
-
-    return map;
-  }, [streakGroups, dayMap]);
-
   return (
-    <View className="mt-8 w-full">
-      {/* Navigation */}
-      <View className="mb-4 flex-row items-center justify-between">
-        <TouchableOpacity onPress={() => setCurrentDate((prev) => subMonths(prev, 1))}>
-          <Ionicons name="chevron-back" size={normalize(16)} className="text-xl font-bold" />
-        </TouchableOpacity>
-        <Text className="text-base font-bold">{format(currentDate, "MMMM yyyy").toUpperCase()}</Text>
-        <TouchableOpacity onPress={() => setCurrentDate((prev) => addMonths(prev, 1))}>
-          <Ionicons name="chevron-forward" size={normalize(16)} className="text-xl font-bold" />
-        </TouchableOpacity>
-      </View>
+    <PanGestureHandler onHandlerStateChange={onSwipe}>
+      <View className="mt-8 w-full">
+        {/* Navigation */}
+        <View className="mb-4 flex-row items-center justify-between">
+          <TouchableOpacity onPress={() => setCurrentDate((prev) => subMonths(prev, 1))}>
+            <Ionicons name="chevron-back" size={normalize(16)} className="text-xl font-bold" />
+          </TouchableOpacity>
+          <Text className="text-base font-bold">{format(currentDate, "MMMM yyyy").toUpperCase()}</Text>
+          <TouchableOpacity onPress={() => setCurrentDate((prev) => addMonths(prev, 1))}>
+            <Ionicons name="chevron-forward" size={normalize(16)} className="text-xl font-bold" />
+          </TouchableOpacity>
+        </View>
 
-      {/* Weekday Headers */}
-      <View className="mb-2 flex-row justify-between px-1">
-        {Weekdays.map((day) => (
-          <Text key={day} className="w-8 text-center text-[10px] font-medium text-gray-500">
-            {day}
-          </Text>
-        ))}
-      </View>
+        {/* Weekday Headers */}
+        <View className="mb-2 flex-1 flex-row">
+          {Weekdays.map((day, i) => (
+            <View
+              key={i}
+              style={{
+                width: `${100 / 7}%`,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text className="text-[10px] font-medium text-gray-500">{day}</Text>
+            </View>
+          ))}
+        </View>
 
-      {/* Calendar Grid */}
-      {weeks.map((week, rowIndex) => (
-        <View key={rowIndex} className="mb-2">
-          {/* Pill backgrounds */}
-          <View className="absolute -top-0.5 flex-row">
-            {(pillsByRow[rowIndex] || []).map((pill, i) => (
-              <View
-                key={i}
-                style={{
-                  position: "absolute",
-                  left: pill.left * 32,
-                  width: pill.width * 32,
-                  height: 32,
-                  borderRadius: 20,
-                  backgroundColor: "#999999",
-                }}
-              />
-            ))}
-          </View>
-
-          {/* Days */}
-          <View className="flex-row justify-between">
+        {/* Calendar Grid */}
+        {weeks.map((week, rowIndex) => (
+          <View key={rowIndex} className="mb-2 flex-row flex-wrap">
             {week.map((day, colIndex) => {
-              if (!day) return <View key={colIndex} className="h-8 w-8" />;
+              if (!day) {
+                return (
+                  <View
+                    key={colIndex}
+                    style={{
+                      width: `${100 / 7}%`,
+                      backgroundColor: "transparent",
+                    }}
+                  />
+                );
+              }
 
               const key = format(day, "yyyy-MM-dd");
               const isActive = activeDates.has(key);
               const isStreak = streakDates.has(key);
               const today = isToday(day);
-              const muted = !isSameMonth(day, currentDate);
+
+              const prevKey = format(addDays(day, -1), "yyyy-MM-dd");
+              const nextKey = format(addDays(day, 1), "yyyy-MM-dd");
+
+              const isStart = isStreak && (!streakDates.has(prevKey) || colIndex === 0);
+              const isEnd = isStreak && (!streakDates.has(nextKey) || colIndex === 6);
+
+              const bgColor = isStreak ? "#999999" : "transparent";
+              const borderRadiusStyle = {
+                borderTopLeftRadius: isStart ? 20 : 0,
+                borderBottomLeftRadius: isStart ? 20 : 0,
+                borderTopRightRadius: isEnd ? 20 : 0,
+                borderBottomRightRadius: isEnd ? 20 : 0,
+              };
 
               return (
-                <View key={colIndex} className="h-8 w-8 items-center justify-center">
-                  {today && isActive ?
-                    <View className="h-6 w-6 rounded-full bg-primary-300" />
-                  : isStreak ?
+                <View
+                  key={colIndex}
+                  style={{
+                    width: `${100 / 7}%`,
+                    height: 36,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingTop: 1,
+                    paddingBottom: 1,
+                    backgroundColor: bgColor,
+                    ...borderRadiusStyle,
+                  }}
+                >
+                  {isStreak ?
                     <View className="h-6 w-6 items-center justify-center rounded-full bg-neutral-1000">
                       <FireIcon width={12} height={12} />
                     </View>
+                  : today && isActive ?
+                    <View className="h-6 w-6 rounded-full bg-primary-300" />
                   : isActive ?
                     <View className="h-6 w-6 rounded-full bg-neutral-1000" />
                   : <View className="h-6 w-6 rounded-full bg-gray-300 opacity-50" />}
@@ -178,9 +176,9 @@ const StreakCalendar = () => {
               );
             })}
           </View>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </PanGestureHandler>
   );
 };
 
