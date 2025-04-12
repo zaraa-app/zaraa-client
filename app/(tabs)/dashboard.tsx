@@ -74,7 +74,7 @@ const Dashboard = () => {
       if (firstLesson && lessonPositions.current[firstLesson.$id] !== undefined) {
         scrollViewRef.current?.scrollTo({
           x: lessonPositions.current[firstLesson.$id],
-          animated: false, // no animation on initial load
+          animated: false,
         });
         setSelectedLesson(firstLesson);
         initialScrollDone.current = true;
@@ -115,7 +115,6 @@ const Dashboard = () => {
   const onChapterSelect = (chapter: ChapterResponse) => {
     const firstLesson = lessons.find((lesson) => lesson.chapter.$id === chapter.$id);
     if (firstLesson && lessonPositions.current[firstLesson.$id] !== undefined) {
-      // Mark that this scroll is programmatic
       isProgrammaticScroll.current = true;
       scrollViewRef.current?.scrollTo({
         x: lessonPositions.current[firstLesson.$id],
