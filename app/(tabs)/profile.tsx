@@ -18,7 +18,6 @@ const xpLevels = [
   { minXP: 5000, description: "Legendary Botanist 🌎 - A true plant expert!" },
 ];
 
-// Function to get level description based on XP
 const getLevelDescription = (xp: number) => {
   for (let i = xpLevels.length - 1; i >= 0; i--) {
     if (xp >= xpLevels[i].minXP) {
@@ -41,54 +40,52 @@ const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <View className="flex-1 bg-white p-6 items-center">
-      {/* Profile Section */}
-      <View className="w-full items-center">
-        {/* Avatar */}
-        <View className="h-24 w-24 rounded-full bg-white items-center justify-center">
-          {user.avatar ? (
-            <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
-          ) : (
-            <TextContent className="text-3xl font-bold text-white">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </TextContent>
-          )}
-        </View>
-
-        {/* User Details */}
-        <View className="mt-4 flex-row items-center gap-1">
-          <Text className="text-2xl font-bold text-black">{user.name}</Text>
-          {/* Edit Icon next to the name */}
-          <TouchableOpacity onPress={() => setIsEditing(true)} className="h-6 w-6 items-center justify-center">
-            <FontAwesome6 name="pen-to-square" size={12} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Dynamic Level Description based on XP */}
-        <Text className="text-lg text-gray-500 italic">
-          {getLevelDescription(user.xp)}
-        </Text>
-
-        {/* XP Section Styled Like Reference Image */}
-        <View className="mt-6 w-full max-w-md items-center">
-          {/* XP Label */}
-          <View className="items-start justify-between w-full mb-2">
-            <Text className="font-medium text-black">Current Score</Text>
+    <>
+      <View className="flex-1 items-center bg-white p-6">
+        {/* Profile Section */}
+        <View className="w-full items-center">
+          {/* Avatar */}
+          <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
+            {user.avatar ?
+              <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
+            : <TextContent className="text-3xl font-bold text-white">
+                {user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </TextContent>
+            }
           </View>
-          <View className="w-full p-4 rounded-2xl bg-yellow-50 items-center">
-            <Text className="text-xl font-bold text-yellow-800">⭐ {user.xp} XP</Text>
+
+          {/* User Details */}
+          <View className="mt-4 flex-row items-center gap-1">
+            <Text className="text-2xl font-bold text-black">{user.name}</Text>
+            {/* Edit Icon next to the name */}
+            <TouchableOpacity onPress={() => setIsEditing(true)} className="h-6 w-6 items-center justify-center">
+              <FontAwesome6 name="pen-to-square" size={12} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Dynamic Level Description based on XP */}
+          <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
+
+          {/* XP Section Styled Like Reference Image */}
+          <View className="mt-6 w-full max-w-md items-center">
+            {/* XP Label */}
+            <View className="mb-2 w-full items-start justify-between">
+              <Text className="font-medium text-black">Current Score</Text>
+            </View>
+            <View className="w-full items-center rounded-2xl bg-yellow-50 p-4">
+              <Text className="text-xl font-bold text-yellow-800">⭐ {user.xp} XP</Text>
+            </View>
           </View>
         </View>
+        {/* Profile Edit Modal */}
+        <Modal visible={isEditing} animationType="slide">
+          <ProfileEditView onClose={() => setIsEditing(false)} />
+        </Modal>
       </View>
-
-      {/* Profile Edit Modal */}
-      <Modal visible={isEditing} animationType="slide">
-        <ProfileEditView onClose={() => setIsEditing(false)} />
-      </Modal>
-    </View>
+    </>
   );
 };
 
