@@ -9,7 +9,7 @@ interface ActionButtonProps {
   leftIcon?: React.JSX.Element;
   rightIcon?: React.JSX.Element;
   disabled?: boolean;
-  intent?: "primary" | "secondary" | "tertiary";
+  intent?: "primary" | "secondary" | "tertiary" | "error" | "danger" | "info" | "warning" | "success";
   isOutline?: boolean;
   className?: string;
   style?: object;
@@ -32,6 +32,11 @@ const ActionButton = ({
         primary: "bg-primary-300",
         secondary: "bg-secondary-300",
         tertiary: "bg-white",
+        error: "bg-red-500",
+        danger: "bg-red-600",
+        info: "bg-blue-500",
+        warning: "bg-yellow-500",
+        success: "bg-green-500",
       },
       isOutline: {
         true: "bg-transparent border border-primary-300",
@@ -52,6 +57,11 @@ const ActionButton = ({
         primary: "text-white",
         secondary: "text-white",
         tertiary: "text-neutral-900",
+        error: "text-white",
+        danger: "text-white",
+        info: "text-white",
+        warning: "text-black",
+        success: "text-white",
       },
       disabled: {
         true: "text-neutral-200",
@@ -67,6 +77,31 @@ const ActionButton = ({
         isOutline: true,
         intent: "secondary",
         class: "!text-secondary-300",
+      },
+      {
+        isOutline: true,
+        intent: "error",
+        class: "!text-red-500",
+      },
+      {
+        isOutline: true,
+        intent: "danger",
+        class: "!text-red-600",
+      },
+      {
+        isOutline: true,
+        intent: "info",
+        class: "!text-blue-500",
+      },
+      {
+        isOutline: true,
+        intent: "warning",
+        class: "!text-yellow-500",
+      },
+      {
+        isOutline: true,
+        intent: "success",
+        class: "!text-green-500",
       },
     ],
   });

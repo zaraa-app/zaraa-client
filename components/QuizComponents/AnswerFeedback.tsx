@@ -36,14 +36,7 @@ const AnswerFeedback: React.FC<AnswerFeedbackProps> = ({ isCorrect, message, exp
           {isCorrect ? explanation : correctAnswer}
         </Text>
 
-        <ActionButton
-          title={isCorrect ? "Continue" : "Got it"}
-          onPress={onNext}
-          intent={isCorrect ? "primary" : "tertiary"}
-          className={!isCorrect ? "border border-red-200 bg-red-200" : ""}
-          isOutline={!isCorrect}
-          style={!isCorrect ? { borderColor: "#D5001B" } : {}}
-        />
+        <ActionButton title={isCorrect ? "Continue" : "Got it"} onPress={onNext} intent={isCorrect ? "primary" : "danger"} />
       </View>
     </View>
   );

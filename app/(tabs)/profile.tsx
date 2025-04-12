@@ -4,7 +4,6 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
-import AnswerFeedback from "@/components/QuizComponents/AnswerFeedback";
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -31,9 +30,6 @@ const getLevelDescription = (xp: number) => {
 const ProfileScreen: React.FC = () => {
   const { user } = useGlobalContext();
   const [isEditing, setIsEditing] = useState(false);
-
-  const [showFeedback, setShowFeedback] = useState(true); // or false initially
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(true); // change to false to test incorrect variant
 
   if (!user) {
     return (
@@ -89,14 +85,6 @@ const ProfileScreen: React.FC = () => {
           <ProfileEditView onClose={() => setIsEditing(false)} />
         </Modal>
       </View>
-      {showFeedback && (
-        <AnswerFeedback
-          isCorrect={isAnswerCorrect}
-          explanation="Cacti need sandy soil to be healthy."
-          correctAnswer="Well-draining sandy soil"
-          onNext={() => setShowFeedback(false)}
-        />
-      )}
     </>
   );
 };
