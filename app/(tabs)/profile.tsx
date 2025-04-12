@@ -5,6 +5,7 @@ import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
 import UserActivityCalendar from "@/components/Profile/UserActivityCalendar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -19,7 +20,6 @@ const xpLevels = [
   { minXP: 5000, description: "Legendary Botanist 🌎 - A true plant expert!" },
 ];
 
-// Function to get level description based on XP
 const getLevelDescription = (xp: number) => {
   for (let i = xpLevels.length - 1; i >= 0; i--) {
     if (xp >= xpLevels[i].minXP) {
@@ -44,9 +44,7 @@ const ProfileScreen: React.FC = () => {
   return (
     <>
       <View className="flex-1 items-center bg-white p-6">
-        {/* Profile Section */}
         <View className="w-full items-center">
-          {/* Avatar */}
           <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
             {user.avatar ?
               <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
@@ -59,22 +57,17 @@ const ProfileScreen: React.FC = () => {
             }
           </View>
 
-          {/* User Details */}
           <View className="mt-4 flex-row items-center gap-1">
             <Text className="text-2xl font-bold text-black">{user.name}</Text>
-            {/* Edit Icon next to the name */}
             <TouchableOpacity onPress={() => setIsEditing(true)} className="h-6 w-6 items-center justify-center">
               <FontAwesome6 name="pen-to-square" size={12} />
             </TouchableOpacity>
           </View>
 
-          {/* Dynamic Level Description based on XP */}
           <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
         </View>
         <ScrollView className="mt-6 w-full" showsVerticalScrollIndicator={false}>
-          {/* XP Section Styled Like Reference Image */}
           <View className="mt-6 w-full max-w-md items-center">
-            {/* XP Label */}
             <View className="mb-2 w-full items-start justify-between">
               <Text className="font-medium text-black">Current Score</Text>
             </View>
@@ -83,13 +76,10 @@ const ProfileScreen: React.FC = () => {
             </View>
           </View>
 
-          {/* 🚀 Make everything below scrollable */}
-
-          <UserActivityCalendar />
-          {/* Add more scrollable sections below if needed */}
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <UserActivityCalendar />
+          </GestureHandlerRootView>
         </ScrollView>
-
-        {/* Profile Edit Modal */}
       </View>
 
       <Modal visible={isEditing} animationType="slide">

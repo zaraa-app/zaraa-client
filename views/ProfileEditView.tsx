@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Alert, ActivityIndicator, ScrollView, TouchableOpacity, Text, Image, SafeAreaView } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // Importing Picker
+import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import FormField from "@/components/FormField";
 import ActionButton from "@/components/ActionButton";
@@ -10,7 +10,6 @@ import { UserResponse } from "@/api/types/user.types";
 import { uploadImage } from "@/api/services/storage.service";
 import { updateUser } from "@/api/services/user.service";
 import Modal from "react-native-modal";
-import { Ionicons } from "@expo/vector-icons";
 import styles from "@/utils/styles";
 import { Language } from "@/api/enums/ELanguage.enum";
 
@@ -37,13 +36,6 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
     CA: "Canada",
     JO: "Jordan",
   };
-
-  const [selectedCountry, setSelectedCountry] = useState(user?.country || "United States");
-  console.log("Test");
-  
-  console.log(user?.country);
-
-  console.log(user?.name);
 
   useEffect(() => {
     if (!user) return;
@@ -78,17 +70,17 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
 
   const pickImage = async (fromCamera: boolean = false) => {
     try {
-      let result: ImagePicker.ImagePickerResult = await (fromCamera
-        ? ImagePicker.launchCameraAsync({
-            mediaTypes: "images",
-            allowsEditing: true,
-            quality: 1,
-          })
-        : ImagePicker.launchImageLibraryAsync({
-            mediaTypes: "images",
-            allowsEditing: true,
-            quality: 1,
-          }));
+      let result: ImagePicker.ImagePickerResult = await (fromCamera ?
+        ImagePicker.launchCameraAsync({
+          mediaTypes: "images",
+          allowsEditing: true,
+          quality: 1,
+        })
+      : ImagePicker.launchImageLibraryAsync({
+          mediaTypes: "images",
+          allowsEditing: true,
+          quality: 1,
+        }));
 
       if (!result.canceled && result.assets.length > 0) {
         setUploading(true);
@@ -138,16 +130,15 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
           {/* Editable Profile Picture */}
           <TouchableOpacity onPress={() => pickImage(false)} className="relative mb-6">
             <View className="h-32 w-32 items-center justify-center rounded-full bg-primary-alpha-10">
-              {updatedUser.avatar ? (
+              {updatedUser.avatar ?
                 <Image source={{ uri: updatedUser.avatar.toString() }} className="h-32 w-32 rounded-full" />
-              ) : (
-                <TextContent className="text-4xl font-bold text-white">
+              : <TextContent className="text-4xl font-bold text-white">
                   {updatedUser.name
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
                 </TextContent>
-              )}
+              }
             </View>
             {/* Overlay Camera Icon */}
             <View className="absolute bottom-0 right-0 h-10 w-10 items-center justify-center rounded-full bg-gray-300">
@@ -164,7 +155,12 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
               onValueChange={(value) => handleInputChange("phoneNumber", parseInt(value || "0"))}
               keyboardType="phone-pad"
             />
-            <FormField label="Email" value={updatedUser.email} onValueChange={(value) => handleInputChange("email", value)} keyboardType="email-address" />
+            <FormField
+              label="Email"
+              value={updatedUser.email}
+              onValueChange={(value) => handleInputChange("email", value)}
+              keyboardType="email-address"
+            />
 
             {/* Country Picker */}
             <TouchableOpacity onPress={() => setIsCountryModalVisible(true)} activeOpacity={0.7}>
@@ -181,13 +177,11 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
             </TouchableOpacity>
           </View>
 
-            {/* Country Picker Modal */}
-            <Modal isVisible={isCountryModalVisible} onBackdropPress={() => setIsCountryModalVisible(false)}>
-            <View className="bg-white p-6 rounded-lg">
-                {/* Country Picker */}
-                <Picker
-                selectedValue={updatedUser.country} onValueChange={(itemValue) => handleInputChange("country", itemValue)} 
-                >
+          {/* Country Picker Modal */}
+          <Modal isVisible={isCountryModalVisible} onBackdropPress={() => setIsCountryModalVisible(false)}>
+            <View className="rounded-lg bg-white p-6">
+              {/* Country Picker */}
+              <Picker selectedValue={updatedUser.country} onValueChange={(itemValue) => handleInputChange("country", itemValue)}>
                 <Picker.Item label="United States" value={countries.US} />
                 <Picker.Item label="Germany" value={countries.DE} />
                 <Picker.Item label="France" value={countries.FR} />
@@ -195,47 +189,53 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
                 <Picker.Item label="Spain" value={countries.ES} />
                 <Picker.Item label="Jordan" value={countries.JO} />
                 <Picker.Item label="Austria" value={countries.AT} />
-                </Picker>
+              </Picker>
 
-                {/* Select Button */}
-                <TouchableOpacity
+              {/* Select Button */}
+              <TouchableOpacity
                 onPress={() => {
-                    handleInputChange("country", updatedUser.country); 
-                    setIsCountryModalVisible(false); // Close modal
+                  handleInputChange("country", updatedUser.country);
+                  setIsCountryModalVisible(false); // Close modal
                 }}
-                className="mt-4 p-3 bg-blue-500 rounded-lg items-center"
-                >
-                <Text className="text-white font-bold">Select</Text>
-                </TouchableOpacity>
+                className="mt-4 items-center rounded-lg bg-blue-500 p-3"
+              >
+                <Text className="font-bold text-white">Select</Text>
+              </TouchableOpacity>
             </View>
-            </Modal>
+          </Modal>
 
-            {/* Language Modal */}
-            <Modal isVisible={isLanguageModalVisible} onBackdropPress={() => setLanguageModalVisible(false)}>
-            <View className="bg-white p-6 rounded-lg">
-                {/* Language Picker */}
-                <Picker
-                selectedValue={updatedUser.language} onValueChange={(itemValue) => handleInputChange("language", itemValue)} // Temporarily store selection
-                >
+          {/* Language Modal */}
+          <Modal isVisible={isLanguageModalVisible} onBackdropPress={() => setLanguageModalVisible(false)}>
+            <View className="rounded-lg bg-white p-6">
+              {/* Language Picker */}
+              <Picker
+                selectedValue={updatedUser.language}
+                onValueChange={(itemValue) => handleInputChange("language", itemValue)} // Temporarily store selection
+              >
                 <Picker.Item label="English" value={Language.English} />
                 <Picker.Item label="Arabic" value={Language.Arabic} />
-                </Picker>
+              </Picker>
 
-                {/* Select Button */}
-                <TouchableOpacity
+              {/* Select Button */}
+              <TouchableOpacity
                 onPress={() => {
-                    handleInputChange("language", updatedUser.language); 
-                    setLanguageModalVisible(false); // Close modal
+                  handleInputChange("language", updatedUser.language);
+                  setLanguageModalVisible(false); // Close modal
                 }}
-                className="mt-4 p-3 bg-blue-500 rounded-lg items-center"
-                >
-                <Text className="text-white font-bold">Select</Text>
-                </TouchableOpacity>
+                className="mt-4 items-center rounded-lg bg-blue-500 p-3"
+              >
+                <Text className="font-bold text-white">Select</Text>
+              </TouchableOpacity>
             </View>
-            </Modal>
+          </Modal>
 
           {/* Save Button */}
-          <ActionButton title={uploading ? "Uploading..." : "Save Changes"} onPress={handleSave} className="mb-4 mt-10 w-full max-w-lg p-5" disabled={uploading} />
+          <ActionButton
+            title={uploading ? "Uploading..." : "Save Changes"}
+            onPress={handleSave}
+            className="mb-4 mt-10 w-full max-w-lg p-5"
+            disabled={uploading}
+          />
           <ActionButton title="Back" onPress={onClose} intent="tertiary" />
         </View>
       </ScrollView>
