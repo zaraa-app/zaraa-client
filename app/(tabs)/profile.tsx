@@ -8,7 +8,6 @@ import AnswerOption from "@/components/QuizComponents/AnswerOption";
 import QuizView from "@/views/QuizView";
 import FlashcardOption from "@/components/QuizComponents/FlashcardOption";
 
-
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
   { minXP: 100, description: "Sprout 🌿 - Learning the basics!" },
@@ -44,24 +43,23 @@ const ProfileScreen: React.FC = () => {
     );
   }
 
-const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-const [checked, setChecked] = useState(false); // only if you're checking correctness later
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [checked, setChecked] = useState(false); // only if you're checking correctness later
   return (
-    <View className="flex-1 bg-white p-6 items-center">
+    <View className="flex-1 items-center bg-white p-6">
       {/* Profile Section */}
       <View className="w-full items-center">
         {/* Avatar */}
-        <View className="h-24 w-24 rounded-full bg-white items-center justify-center">
-          {user.avatar ? (
+        <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
+          {user.avatar ?
             <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
-          ) : (
-            <TextContent className="text-3xl font-bold text-white">
+          : <TextContent className="text-3xl font-bold text-white">
               {user.name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </TextContent>
-          )}
+          }
         </View>
 
         {/* User Details */}
@@ -74,40 +72,37 @@ const [checked, setChecked] = useState(false); // only if you're checking correc
         </View>
 
         {/* Dynamic Level Description based on XP */}
-        <Text className="text-lg text-gray-500 italic">
-          {getLevelDescription(user.xp)}
-        </Text>
+        <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
 
         {/* XP Section Styled Like Reference Image */}
         <View className="mt-6 w-full max-w-md items-center">
           {/* XP Label */}
-          <View className="items-start justify-between w-full mb-2">
+          <View className="mb-2 w-full items-start justify-between">
             <Text className="font-medium text-black">Current Score</Text>
           </View>
-          <View className="w-full p-4 rounded-2xl bg-yellow-50 items-center">
+          <View className="w-full items-center rounded-2xl bg-yellow-50 p-4">
             <Text className="text-xl font-bold text-yellow-800">⭐ {user.xp} XP</Text>
           </View>
         </View>
       </View>
 
       <View className="mt-6 w-full items-center">
-      <Text className="text-lg font-semibold text-black mb-2">Flashcard Option Test</Text>
-      <View className="w-full flex-row flex-wrap justify-between gap-y-4">
-        {["a", "b"].map((id) => (
-          <FlashcardOption
-            key={id}
-            id={id}
-            letter={id.toUpperCase()}
-            isSelected={selectedCardId === id}
-            isCorrect={id === "a"} // Example: only A is correct
-            checked={checked}
-            imageUrl="https://cloud.appwrite.io/v1/storage/buckets/67ba2f92002293adf476/files/67e00915003bb57b7fac/view?project=67b1bbcc0022177a6ca9&mode=admin"
-            onPress={() => setSelectedCardId(id)}
-          />
-        ))}
+        <Text className="mb-2 text-lg font-semibold text-black">Flashcard Option Test</Text>
+        <View className="w-full flex-row flex-wrap justify-between gap-y-4">
+          {["a", "b", "c", "d"].map((id) => (
+            <FlashcardOption
+              key={id}
+              id={id}
+              letter={id.toUpperCase()}
+              isSelected={selectedCardId === id}
+              isCorrect={id === "a"} // Example: only A is correct
+              checked={checked}
+              imageUrl="https://cloud.appwrite.io/v1/storage/buckets/67ba2f92002293adf476/files/67e00915003bb57b7fac/view?project=67b1bbcc0022177a6ca9&mode=admin"
+              onPress={() => setSelectedCardId(id)}
+            />
+          ))}
+        </View>
       </View>
-    </View>
-
 
       {/* Profile Edit Modal */}
       <Modal visible={isEditing} animationType="slide">

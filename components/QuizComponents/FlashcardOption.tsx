@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useEffect } from "react";
 import { View, Text, Pressable, Image } from "react-native";
-import CardFlip from "react-native-card-flip";
 import { FontAwesome6 } from "@expo/vector-icons";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, Extrapolate } from "react-native-reanimated";
 
 interface FlashcardOptionProps {
   id: string;
@@ -13,64 +13,61 @@ interface FlashcardOptionProps {
   onPress: () => void;
 }
 
-const FlashcardOption: React.FC<FlashcardOptionProps> = ({
-  letter,
-  isSelected,
-  isCorrect,
-  checked = false,
-  imageUrl,
-  onPress,
-}) => {
-  const cardRef = useRef<any>(null);
+const FlashcardOption: React.FC<FlashcardOptionProps> = ({ letter, isSelected, isCorrect, checked = false, imageUrl, onPress }) => {
+  const flip = useSharedValue(0); // 0 = front, 180 = back
 
-  React.useEffect(() => {
-    if (cardRef.current) {
-      isSelected ? cardRef.current.flip() : cardRef.current.flipBack();
-    }
+  useEffect(() => {
+    flip.value = withTiming(isSelected ? 180 : 0, { duration: 400 });
   }, [isSelected]);
 
-  const borderColor = checked
-    ? isCorrect
-      ? "#4CAF50"
+  const frontAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotateY: `${interpolate(flip.value, [0, 180], [0, 180])}deg`,
+        },
+      ],
+      backfaceVisibility: "hidden",
+    };
+  });
+
+  const backAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotateY: `${interpolate(flip.value, [0, 180], [180, 360])}deg`,
+        },
+      ],
+      backfaceVisibility: "hidden",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    };
+  });
+
+  const borderColor =
+    checked ?
+      isCorrect ? "#4CAF50"
       : "#D5001B"
     : "transparent";
 
-    const CardFlipAny = CardFlip as any;
-
   return (
-    <Pressable
-      onPress={onPress}
-      className="w-[48%] aspect-square rounded-xl overflow-hidden my-2"
-      style={{ borderWidth: 4, borderColor }}
-    >
-      <CardFlipAny ref={cardRef} style={{ flex: 1 }}>
-        {/* Front (Letter side) */}
-        <View className="flex-1 items-center justify-center rounded-xl bg-[#333]">
-          <Text className="text-white text-xl font-bold">{letter}</Text>
-        </View>
+    <Pressable onPress={onPress} className="my-2 aspect-square w-[48%] overflow-hidden rounded-xl" style={{ borderWidth: 4, borderColor }}>
+      <Animated.View className="items-center justify-center rounded-xl bg-white" style={[frontAnimatedStyle, { flex: 1 }]}>
+        <Text className="text-4xl font-bold">{letter}</Text>
+      </Animated.View>
 
-        {/* Back (Image side) */}
-        <View className="flex-1 items-center justify-center rounded-xl bg-[#333] overflow-hidden">
-          {imageUrl ? (
-            <Image
-              source={{ uri: imageUrl }}
-              className="w-full h-full rounded-xl"
-              resizeMode="cover"
-            />
-          ) : (
-            <Text className="text-[#bbb] text-sm">Image</Text>
-          )}
-        </View>
-      </CardFlipAny>
+      <Animated.View className="items-center justify-center rounded-xl bg-white" style={[backAnimatedStyle, { flex: 1 }]}>
+        {imageUrl ?
+          <Image source={{ uri: imageUrl }} className="h-full w-full rounded-xl" resizeMode="cover" />
+        : <Text className="text-center">No Image</Text>}
+      </Animated.View>
 
-      {/* Icon Overlay */}
       {checked && isSelected && (
-        <View className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full z-10">
-          <FontAwesome6
-            name={isCorrect ? "check" : "xmark"}
-            size={24}
-            color="#fff"
-          />
+        <View className="absolute right-2.5 top-2.5 z-10 rounded-full bg-black/60 p-1.5">
+          <FontAwesome6 name={isCorrect ? "check" : "xmark"} size={24} color="#fff" />
         </View>
       )}
     </Pressable>
