@@ -6,6 +6,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, Ex
 interface FlashcardOptionProps {
   id: string;
   letter: string;
+  answer: string;
   isSelected: boolean;
   isCorrect?: boolean;
   checked?: boolean;
@@ -13,7 +14,7 @@ interface FlashcardOptionProps {
   onPress: () => void;
 }
 
-const FlashcardOption: React.FC<FlashcardOptionProps> = ({ letter, isSelected, isCorrect, checked = false, imageUrl, onPress }) => {
+  const FlashcardOption: React.FC<FlashcardOptionProps> = ({ answer, letter, isSelected, isCorrect, checked = false, imageUrl, onPress }) => {
   const flip = useSharedValue(0); // 0 = front, 180 = back
 
   useEffect(() => {
@@ -55,8 +56,9 @@ const FlashcardOption: React.FC<FlashcardOptionProps> = ({ letter, isSelected, i
 
   return (
     <Pressable onPress={onPress} className="my-2 aspect-square w-[48%] overflow-hidden rounded-xl" style={{ borderWidth: 4, borderColor }}>
-      <Animated.View className="items-center justify-center rounded-xl bg-white" style={[frontAnimatedStyle, { flex: 1 }]}>
-        <Text className="text-4xl font-bold">{letter}</Text>
+      <Animated.View className="items-center justify-center rounded-xl bg-white" style={[frontAnimatedStyle, { flex: 1, backgroundColor: "#333333" }]}>
+      <Text className="text-4xl font-bold text-white">{letter}</Text>
+      <Text className="text-4xl font-bold text-white">{answer}</Text>
       </Animated.View>
 
       <Animated.View className="items-center justify-center rounded-xl bg-white" style={[backAnimatedStyle, { flex: 1 }]}>

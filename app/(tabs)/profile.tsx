@@ -94,6 +94,7 @@ const ProfileScreen: React.FC = () => {
               key={id}
               id={id}
               letter={id.toUpperCase()}
+              answer="Test"
               isSelected={selectedCardId === id}
               isCorrect={id === "a"} // Example: only A is correct
               checked={checked}
