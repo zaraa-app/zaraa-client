@@ -7,4 +7,9 @@ export interface ForumPostResponse extends Models.Document {
   body: string;
   user: UserResponse;
   tags: TagResponse[];
+  images: ForumPostImageResponse[];
+}
+
+export interface ForumPostImageResponse extends Models.File {
+  imageUrl: URL;
 }

@@ -33,7 +33,7 @@ const Forums = () => {
   const fetchForumPosts = async () => {
     try {
       const data = await getAllForumPosts();
-      setForums(data);
+      setForums(data.sort((a, b) => new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()));
       setFilteredForums(data);
     } catch (error) {
       console.error("Error fetching forum posts:", error);
@@ -96,7 +96,7 @@ const Forums = () => {
   }
 
   return (
-    <Animated.View style={[styles.pt2, { opacity: fadeAnim }]}>
+    <Animated.View style={[{ flex: 1, paddingTop: 8, opacity: fadeAnim }]}>
       <View style={[styles.gap2, styles.mb4]}>
         <View className="flex-row items-center justify-between" style={[styles.px6]}>
           <HeadingContent className="flex-1 " size="h5" heading="Forums" />
@@ -137,8 +137,7 @@ const Forums = () => {
       {filteredForums.length > 0 ?
         <FlatList
           style={[styles.px6]}
-          contentContainerClassName="h-full"
-          contentContainerStyle={[styles.gap4]}
+          contentContainerStyle={[styles.gap4, { flexGrow: 1, paddingBottom: 120 }]}
           data={filteredForums}
           renderItem={({ item }) => <ForumPost forum={item} />}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
