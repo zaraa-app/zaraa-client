@@ -98,7 +98,7 @@ const ProfileScreen: React.FC = () => {
               isSelected={selectedCardId === id}
               isCorrect={id === "a"} // Example: only A is correct
               checked={checked}
-              imageUrl="https://cloud.appwrite.io/v1/storage/buckets/67ba2f92002293adf476/files/67e00915003bb57b7fac/view?project=67b1bbcc0022177a6ca9&mode=admin"
+              imageUrl="https://picsum.photos/536/354"
               onPress={() => setSelectedCardId(id)}
             />
           ))}
