@@ -4,6 +4,8 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
+import QuizPage from "@/views/QuizPage";
+
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -40,52 +42,7 @@ const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <>
-      <View className="flex-1 items-center bg-white p-6">
-        {/* Profile Section */}
-        <View className="w-full items-center">
-          {/* Avatar */}
-          <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
-            {user.avatar ?
-              <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
-            : <TextContent className="text-3xl font-bold text-white">
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </TextContent>
-            }
-          </View>
-
-          {/* User Details */}
-          <View className="mt-4 flex-row items-center gap-1">
-            <Text className="text-2xl font-bold text-black">{user.name}</Text>
-            {/* Edit Icon next to the name */}
-            <TouchableOpacity onPress={() => setIsEditing(true)} className="h-6 w-6 items-center justify-center">
-              <FontAwesome6 name="pen-to-square" size={12} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Dynamic Level Description based on XP */}
-          <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
-
-          {/* XP Section Styled Like Reference Image */}
-          <View className="mt-6 w-full max-w-md items-center">
-            {/* XP Label */}
-            <View className="mb-2 w-full items-start justify-between">
-              <Text className="font-medium text-black">Current Score</Text>
-            </View>
-            <View className="w-full items-center rounded-2xl bg-yellow-50 p-4">
-              <Text className="text-xl font-bold text-yellow-800">⭐ {user.xp} XP</Text>
-            </View>
-          </View>
-        </View>
-        {/* Profile Edit Modal */}
-        <Modal visible={isEditing} animationType="slide">
-          <ProfileEditView onClose={() => setIsEditing(false)} />
-        </Modal>
-      </View>
-    </>
+    <QuizPage></QuizPage>
   );
 };
 
