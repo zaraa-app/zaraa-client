@@ -6,7 +6,6 @@ import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
 import QuizPage from "@/views/QuizPage";
 
-
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
   { minXP: 100, description: "Sprout 🌿 - Learning the basics!" },
@@ -41,9 +40,7 @@ const ProfileScreen: React.FC = () => {
     );
   }
 
-  return (
-    <QuizPage></QuizPage>
-  );
+  return <QuizPage />;
 };
 
 export default ProfileScreen;
