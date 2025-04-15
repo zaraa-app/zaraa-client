@@ -1,4 +1,4 @@
-import { Animated, FlatList, RefreshControl, TouchableOpacity, View } from "react-native";
+import { Animated, FlatList, Modal, RefreshControl, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import ForumPost from "@/components/Forum/ForumPost";
 import { ForumPostResponse } from "@/api/types/forumPost.types";
@@ -14,6 +14,7 @@ import PageLoader from "@/components/PageLoader/PageLoader";
 import { getAllForumPosts } from "@/api/services/forumPost.service";
 import { TagResponse } from "@/api/types/tag.types";
 import { getAllTags } from "@/api/services/tag.service";
+import CreateForumView from "@/views/CreateForumView";
 
 const Forums = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -25,13 +26,14 @@ const Forums = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const fetchForumPosts = async () => {
     try {
       const data = await getAllForumPosts();
-      setForums(data);
+      setForums(data.sort((a, b) => new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()));
       setFilteredForums(data);
     } catch (error) {
       console.error("Error fetching forum posts:", error);
@@ -94,7 +96,7 @@ const Forums = () => {
   }
 
   return (
-    <Animated.View style={[styles.pt2, { opacity: fadeAnim }]}>
+    <Animated.View style={[{ flex: 1, paddingTop: 8, opacity: fadeAnim }]}>
       <View style={[styles.gap2, styles.mb4]}>
         <View className="flex-row items-center justify-between" style={[styles.px6]}>
           <HeadingContent className="flex-1 " size="h5" heading="Forums" />
@@ -102,11 +104,14 @@ const Forums = () => {
             className="flex-row items-center justify-center"
             style={[styles.gap1]}
             activeOpacity={0.7}
-            onPress={() => router.push("/(tabs)/forums/create")}
+            onPress={() => setIsVisible(true)}
           >
             <Ionicons name="add" size={normalize(14)} />
             <TextContent text="Create Post" size="sm" />
           </TouchableOpacity>
+          <Modal visible={isVisible} animationType="slide">
+            <CreateForumView toggleVisibility={setIsVisible} />
+          </Modal>
         </View>
         <View style={[styles.px6]}>
           <ForumSearch value={searchQuery} onValueChange={setSearchQuery} />
@@ -132,8 +137,7 @@ const Forums = () => {
       {filteredForums.length > 0 ?
         <FlatList
           style={[styles.px6]}
-          contentContainerClassName="h-full"
-          contentContainerStyle={[styles.gap4]}
+          contentContainerStyle={[styles.gap4, { flexGrow: 1, paddingBottom: 120 }]}
           data={filteredForums}
           renderItem={({ item }) => <ForumPost forum={item} />}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}

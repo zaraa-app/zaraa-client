@@ -6,7 +6,6 @@ export default function ForumsLayout() {
     <Stack screenOptions={{ contentStyle: { backgroundColor: "white" } }}>
       <Stack.Screen name="index" options={{ header: () => <TopBar pageType="forums" /> }} />
       <Stack.Screen name="[forumId]" options={{ header: () => <TopBar pageType="forums" /> }} />
-      <Stack.Screen name="create" options={{ presentation: "modal", animation: "slide_from_bottom", headerShown: false }} />
     </Stack>
   );
 }
