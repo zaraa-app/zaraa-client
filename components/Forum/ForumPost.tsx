@@ -1,4 +1,4 @@
-import { View, Image, FlatList } from "react-native";
+import { View, Image, FlatList, TouchableOpacity } from "react-native";
 import React from "react";
 import normalize from "@/utils/normalize";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,6 +9,7 @@ import { ForumPostResponse } from "@/api/types/forumPost.types";
 
 export interface ForumPostProps {
   forum: ForumPostResponse;
+  onPress: (forum: ForumPostResponse) => void;
 }
 
 /**
@@ -51,18 +52,45 @@ export const relativeDate = (date: string | Date) => {
   }
 };
 
-const ForumPost = ({ forum }: ForumPostProps) => {
+const ForumPost = ({ forum, onPress }: ForumPostProps) => {
+  const decodeHtmlEntities = (text: string): string => {
+    return text
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"');
+  };
+
+  const cleanText = (html: string): string => {
+    let text = html.replace(/<[^>]+>/g, "");
+    text = decodeHtmlEntities(text);
+    return text.replace(/\s+/g, " ").trim();
+  };
+
+  const getExcerpt = (html: string, maxLength = 120): string => {
+    const cleaned = cleanText(html);
+    return cleaned.length > maxLength ? cleaned.slice(0, maxLength).trimEnd() + "..." : cleaned;
+  };
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={() => onPress(forum)}
       style={[{ minHeight: normalize(140), maxHeight: normalize(200) }, styles.p3, styles.gap3]}
       className="flex-row rounded-3xl bg-secondary-100"
+      activeOpacity={0.8}
     >
-      <Image
-        src={"https://picsum.photos/536/354"}
-        style={[{ width: normalize(88) }]}
-        className="h-full overflow-hidden rounded-xl"
-        resizeMode="cover"
-      />
+      {forum.images.length > 0 && (
+        <Image
+          source={{
+            uri: forum.images[0].imageUrl.toString().replace("/preview", "/view"),
+          }}
+          style={[{ width: normalize(88) }]}
+          className="h-full overflow-hidden rounded-xl"
+          resizeMode="cover"
+        />
+      )}
       <View className="flex-1 justify-between" style={[styles.gap2]}>
         <View className="flex-row" style={[styles.gap1]}>
           <FlatList
@@ -74,7 +102,7 @@ const ForumPost = ({ forum }: ForumPostProps) => {
         </View>
         <View className="flex-1">
           <TextContent size="sm" className="font-bold" text={forum.title} numberOfLines={2} />
-          <TextContent size="2xs" className="text-gray-700" text={forum.body} numberOfLines={3} />
+          <TextContent size="2xs" className="text-gray-700" text={getExcerpt(forum.body, 60)} numberOfLines={3} />
         </View>
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center" style={[styles.gap1]}>
@@ -104,7 +132,7 @@ const ForumPost = ({ forum }: ForumPostProps) => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

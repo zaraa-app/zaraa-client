@@ -1,1 +1,1 @@
-export type PageType = "dashboard" | "leaderboard" | "forums" | "profile";
+export type PageType = "dashboard" | "leaderboard" | "forums" | "profile" | "back";

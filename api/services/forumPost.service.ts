@@ -53,8 +53,6 @@ export const createForumPost = async (forumPost: ForumPostResponse, imageUris: I
       imageUrl: url,
     }));
 
-    console.log("mappedImages", mappedImages);
-
     const request = {
       ...forumPost,
       images: mappedImages,
@@ -62,11 +60,27 @@ export const createForumPost = async (forumPost: ForumPostResponse, imageUris: I
       user: forumPost.user.$id,
     };
 
-    console.log("request", request);
-
     await databases.createDocument(config.databaseId, tableIds.forumPosts, ID.unique(), request);
   } catch (error) {
     console.log("Error creating forum post:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetches a single forum post by its ID from the Appwrite database.
+ *
+ * @param {string} forumId - The ID of the forum post to retrieve.
+ * @returns {Promise<ForumPostResponse>} - The forum post data.
+ * @throws {Error} - If the post is not found or the request fails.
+ */
+export const getForumPostById = async (forumId: string): Promise<ForumPostResponse> => {
+  try {
+    const response = await databases.getDocument(config.databaseId, tableIds.forumPosts, forumId);
+
+    return response as ForumPostResponse;
+  } catch (error) {
+    console.error("Error fetching forum post by ID:", error);
     throw error;
   }
 };
