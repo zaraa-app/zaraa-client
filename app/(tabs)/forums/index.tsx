@@ -57,10 +57,12 @@ const Forums = () => {
   };
 
   useEffect(() => {
+    if (isVisible) return;
+
     setIsLoading(true);
     fetchTags();
     fetchForumPosts();
-  }, []);
+  }, [isVisible]);
 
   useEffect(() => {
     const filtered = forums.filter((forum) => {
@@ -89,6 +91,10 @@ const Forums = () => {
     }
 
     setSelectedTags([tag, ...selectedTags]);
+  };
+
+  const onForumPostPress = (forum: ForumPostResponse) => {
+    router.push(`/forums/${forum.$id}`);
   };
 
   if (isLoading) {
@@ -139,7 +145,7 @@ const Forums = () => {
           style={[styles.px6]}
           contentContainerStyle={[styles.gap4, { flexGrow: 1, paddingBottom: 120 }]}
           data={filteredForums}
-          renderItem={({ item }) => <ForumPost forum={item} />}
+          renderItem={({ item }) => <ForumPost forum={item} onPress={onForumPostPress} />}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
         />
       : <View className="mt-24 w-full items-center justify-center" style={[styles.gap2]}>
