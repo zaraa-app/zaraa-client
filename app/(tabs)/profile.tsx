@@ -4,9 +4,9 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
-import AnswerOption from "@/components/QuizComponents/AnswerOption";
-import QuizView from "@/views/QuizView";
-import FlashcardOption from "@/components/QuizComponents/FlashcardOption";
+
+import QuizPage from "@/views/QuizPage";
+
 
 const xpLevels = [
   { minXP: 0, description: "Seedling 🌱 - Just getting started!" },
@@ -21,7 +21,6 @@ const xpLevels = [
   { minXP: 5000, description: "Legendary Botanist 🌎 - A true plant expert!" },
 ];
 
-// Function to get level description based on XP
 const getLevelDescription = (xp: number) => {
   for (let i = xpLevels.length - 1; i >= 0; i--) {
     if (xp >= xpLevels[i].minXP) {
@@ -46,70 +45,9 @@ const ProfileScreen: React.FC = () => {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [checked, setChecked] = useState(false); // only if you're checking correctness later
   return (
-    <View className="flex-1 items-center bg-white p-6">
-      {/* Profile Section */}
-      <View className="w-full items-center">
-        {/* Avatar */}
-        <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
-          {user.avatar ?
-            <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
-          : <TextContent className="text-3xl font-bold text-white">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </TextContent>
-          }
-        </View>
 
-        {/* User Details */}
-        <View className="mt-4 flex-row items-center gap-1">
-          <Text className="text-2xl font-bold text-black">{user.name}</Text>
-          {/* Edit Icon next to the name */}
-          <TouchableOpacity onPress={() => setIsEditing(true)} className="h-6 w-6 items-center justify-center">
-            <FontAwesome6 name="pen-to-square" size={12} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Dynamic Level Description based on XP */}
-        <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
-
-        {/* XP Section Styled Like Reference Image */}
-        <View className="mt-6 w-full max-w-md items-center">
-          {/* XP Label */}
-          <View className="mb-2 w-full items-start justify-between">
-            <Text className="font-medium text-black">Current Score</Text>
-          </View>
-          <View className="w-full items-center rounded-2xl bg-yellow-50 p-4">
-            <Text className="text-xl font-bold text-yellow-800">⭐ {user.xp} XP</Text>
-          </View>
-        </View>
-      </View>
-
-      <View className="mt-6 w-full items-center">
-        <Text className="mb-2 text-lg font-semibold text-black">Flashcard Option Test</Text>
-        <View className="w-full flex-row flex-wrap justify-between gap-y-4">
-          {["a", "b", "c", "d"].map((id) => (
-            <FlashcardOption
-              key={id}
-              id={id}
-              letter={id.toUpperCase()}
-              answer="Test"
-              isSelected={selectedCardId === id}
-              isCorrect={id === "a"} // Example: only A is correct
-              checked={checked}
-              imageUrl="https://picsum.photos/536/354"
-              onPress={() => setSelectedCardId(id)}
-            />
-          ))}
-        </View>
-      </View>
-
-      {/* Profile Edit Modal */}
-      <Modal visible={isEditing} animationType="slide">
-        <ProfileEditView onClose={() => setIsEditing(false)} />
-      </Modal>
-    </View>
+=======
+    <QuizPage></QuizPage>
   );
 };
 
