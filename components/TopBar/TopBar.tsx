@@ -1,15 +1,17 @@
-import { Animated, View } from "react-native";
+import { Animated, View, Pressable, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import styles from "@/utils/styles";
 import Heart from "@/assets/icons/heart.svg";
 import Fire from "@/assets/icons/fire.svg";
-import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "@/utils/styles";
 import InfoTab from "./InfoTab";
-import { useGlobalContext } from "@/context/GlobalProvider";
 import LogoutButton from "./LogoutButton";
 import CategorySelect from "../CategorySelect";
 import { PageType } from "@/types/PageType.types";
 import PageLoader from "../PageLoader/PageLoader";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 export interface TopBarProps {
   pageType: PageType;
@@ -18,6 +20,7 @@ export interface TopBarProps {
 const TopBar = ({ pageType }: TopBarProps) => {
   const { user, isLoading } = useGlobalContext();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const router = useRouter();
 
   useEffect(() => {
     if (isLoading) return;
@@ -30,6 +33,18 @@ const TopBar = ({ pageType }: TopBarProps) => {
 
   if (!user || isLoading) {
     return <PageLoader pageType="topbar" />;
+  }
+
+  if (pageType === "back") {
+    return (
+      <SafeAreaView edges={["top"]}>
+        <View className="px-6 pt-4">
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#374151" />
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (

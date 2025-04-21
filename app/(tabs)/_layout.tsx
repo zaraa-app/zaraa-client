@@ -9,10 +9,10 @@ const TabsLayout = () => {
   return (
     <CategoryProvider>
       <ChapterProvider>
-        <Tabs screenOptions={{ animation: "fade", sceneStyle: { backgroundColor: "white" } }} tabBar={(props) => <MenuBar {...props} />}>
+        <Tabs screenOptions={{ sceneStyle: { backgroundColor: "white" } }} tabBar={(props) => <MenuBar {...props} />}>
           <Tabs.Screen name="dashboard" options={{ title: "Dashboard", header: () => <TopBar pageType="dashboard" /> }} />
           <Tabs.Screen name="leaderboard" options={{ title: "Leaderboard", header: () => <TopBar pageType="leaderboard" /> }} />
-          <Tabs.Screen name="forums" options={{ title: "Forums", header: () => <TopBar pageType="forums" /> }} />
+          <Tabs.Screen name="forums" options={{ headerShown: false }} />
           <Tabs.Screen name="profile" options={{ title: "Profile", header: () => <TopBar pageType="profile" /> }} />
         </Tabs>
       </ChapterProvider>

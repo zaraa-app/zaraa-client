@@ -1,4 +1,4 @@
-import { View, SafeAreaView, ScrollView, Alert } from "react-native";
+import { View, SafeAreaView, ScrollView } from "react-native";
 import React, { useRef, useState } from "react";
 import ActionButton from "@/components/ActionButton";
 import FormField from "@/components/FormField";
@@ -12,6 +12,7 @@ import { AccountDetails } from "@/app/(auth)/sign-up";
 import { getCurrentUser, signUserIn } from "@/api/services/user.service";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import Toast from "react-native-toast-message";
 
 const SignInView = () => {
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
@@ -29,7 +30,12 @@ const SignInView = () => {
    */
   async function handleSignIn() {
     if (!accountDetails.email || !accountDetails.password) {
-      Alert.alert("All fields are required");
+      Toast.show({
+        type: "error",
+        text1: "Missing fields",
+        text2: "Please enter both an email and password.",
+        position: "bottom",
+      });
       return;
     }
 
@@ -53,7 +59,12 @@ const SignInView = () => {
 
       router.replace("/dashboard");
     } catch (error: any) {
-      Alert.alert("Error signing in", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.message,
+        position: "bottom",
+      });
     } finally {
       setIsSubmitting(false);
     }

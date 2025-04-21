@@ -1,14 +1,15 @@
-import { View, Image } from "react-native";
+import { View, Image, FlatList, TouchableOpacity } from "react-native";
 import React from "react";
 import normalize from "@/utils/normalize";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "@/utils/styles";
-import TextContent from "./TextContent";
-import TagLabel from "./TagLabel";
+import TextContent from "../TextContent";
+import TagLabel from "../TagLabel";
 import { ForumPostResponse } from "@/api/types/forumPost.types";
 
 export interface ForumPostProps {
   forum: ForumPostResponse;
+  onPress: (forum: ForumPostResponse) => void;
 }
 
 /**
@@ -51,42 +52,64 @@ export const relativeDate = (date: string | Date) => {
   }
 };
 
-const ForumPost = ({ forum }: ForumPostProps) => {
+const ForumPost = ({ forum, onPress }: ForumPostProps) => {
+  const decodeHtmlEntities = (text: string): string => {
+    return text
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"');
+  };
+
+  const cleanText = (html: string): string => {
+    let text = html.replace(/<[^>]+>/g, "");
+    text = decodeHtmlEntities(text);
+    return text.replace(/\s+/g, " ").trim();
+  };
+
+  const getExcerpt = (html: string, maxLength = 120): string => {
+    const cleaned = cleanText(html);
+    return cleaned.length > maxLength ? cleaned.slice(0, maxLength).trimEnd() + "..." : cleaned;
+  };
+
   return (
-    <View
-      style={[{ minHeight: normalize(140), maxHeight: normalize(200) }, styles.px3, styles.py4, styles.gap3]}
+    <TouchableOpacity
+      onPress={() => onPress(forum)}
+      style={[{ minHeight: normalize(140), maxHeight: normalize(200) }, styles.p3, styles.gap3]}
       className="flex-row rounded-3xl bg-secondary-100"
+      activeOpacity={0.8}
     >
-      <View className="justify-between">
-        <View style={[styles.gap2]} className="items-center justify-center">
-          <TextContent size="xs" text={"12"} />
-          <Ionicons name="arrow-up" size={16} />
-        </View>
-        <View style={[styles.gap2]} className="items-center justify-center">
-          <Ionicons name="arrow-down" size={16} />
-          <TextContent size="xs" text={"12"} />
-        </View>
-      </View>
-      <Image
-        src={"https://picsum.photos/536/354"}
-        style={[{ width: normalize(88) }]}
-        className="h-full overflow-hidden rounded-md"
-        resizeMode="cover"
-      />
-      <View className="flex-1" style={[styles.gap2]}>
+      {forum.images.length > 0 && (
+        <Image
+          source={{
+            uri: forum.images[0].imageUrl.toString().replace("/preview", "/view"),
+          }}
+          style={[{ width: normalize(88) }]}
+          className="h-full overflow-hidden rounded-xl"
+          resizeMode="cover"
+        />
+      )}
+      <View className="flex-1 justify-between" style={[styles.gap2]}>
         <View className="flex-row" style={[styles.gap1]}>
-          <TagLabel label="Plant Care" />
-          <TagLabel label="Plant Care" />
-          <TagLabel label="Plant Care" />
+          <FlatList
+            data={forum.tags}
+            renderItem={({ item }) => <TagLabel label={item.name} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
-        <TextContent size="sm" className="font-bold" text="How often should I water my plant?" numberOfLines={2} />
-        <TextContent size="xs" text="I have a plant that needs water every 2-3 days. How often should I water it?" numberOfLines={3} />
+        <View className="flex-1">
+          <TextContent size="sm" className="font-bold" text={forum.title} numberOfLines={2} />
+          <TextContent size="2xs" className="text-gray-700" text={getExcerpt(forum.body, 60)} numberOfLines={3} />
+        </View>
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center" style={[styles.gap1]}>
             <Image
               className="overflow-hidden rounded-full"
               style={{ height: normalize(16), width: normalize(16) }}
-              source={{ uri: forum.user.avatar.toString() }}
+              source={{ uri: forum.user.avatar.toString().replace("/preview", "/view") }}
             />
             <TextContent size="2xs" text={forum.user.name.split(" ")[0]} className="" />
             <TextContent size="3xs" text={relativeDate(forum.$createdAt)} className="font-light italic" />
@@ -94,22 +117,15 @@ const ForumPost = ({ forum }: ForumPostProps) => {
           <View className="flex-row" style={[styles.gap1]}>
             <View
               className="flex-row items-center justify-center rounded-full bg-neutral-1000"
-              style={[styles.gap1, styles.px1, { paddingVertical: normalize(2) }]}
+              style={[styles.gap1, styles.px2, { paddingVertical: normalize(2) }]}
             >
               <Ionicons name="chatbox-outline" size={normalize(10)} color={"white"} />
-              <TextContent size="2xs" text={"2"} className="text-white" />
-            </View>
-            <View
-              className="flex-row items-center justify-center rounded-full bg-neutral-1000"
-              style={[styles.gap1, styles.px1, { paddingVertical: normalize(2) }]}
-            >
-              <Ionicons name="share-outline" size={normalize(10)} color={"white"} />
-              <TextContent size="2xs" text={"Share"} className="text-white" />
+              <TextContent size="2xs" text={forum.comments.length.toString()} className="text-white" />
             </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
