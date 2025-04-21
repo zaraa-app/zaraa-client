@@ -12,7 +12,6 @@ export interface LeaderBoardItemProps {
 }
 
 const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
-  console.log(xp);
   return (
     <View className="flex-row items-center justify-between rounded-2xl bg-secondary-100" style={[styles.p3]}>
       <View className="flex-row items-center" style={[styles.gap2]}>
