@@ -8,8 +8,16 @@ export interface ForumPostResponse extends Models.Document {
   user: UserResponse;
   tags: TagResponse[];
   images: ForumPostImageResponse[];
+  comments: ForumCommentsResponse[];
 }
 
 export interface ForumPostImageResponse extends Models.File {
   imageUrl: URL;
+}
+
+export interface ForumCommentsResponse extends Models.Document {
+  content: string;
+  user: UserResponse;
+  replyingTo?: string;
+  replies: ForumCommentsResponse[];
 }
