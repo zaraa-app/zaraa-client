@@ -133,7 +133,7 @@ const ForumOverview: React.FC<ForumOverviewProps> = ({ post, comments, refetchPo
 
         {/* Comments */}
         <Text onLayout={(e) => setCommentY(e.nativeEvent.layout.y)} className="mt-6 text-lg font-semibold text-gray-800">
-          Comments ({comments?.length || 0})
+          Comments ({comments?.flatMap((c) => [c, ...c.replies]).length || 0})
         </Text>
 
         {comments.length === 0 && <Text className="mt-2 text-gray-600">No comments yet.</Text>}
