@@ -3,6 +3,7 @@ import { client, config, tableIds } from "../appwrite";
 import { ForumPostResponse } from "../types/forumPost.types";
 import { FileRequest, uploadImage } from "./storage.service";
 import { ImagePickerAsset } from "expo-image-picker";
+import { UserResponse } from "../types/user.types";
 
 const databases: Databases = new Databases(client);
 
@@ -81,6 +82,29 @@ export const getForumPostById = async (forumId: string): Promise<ForumPostRespon
     return response as ForumPostResponse;
   } catch (error) {
     console.error("Error fetching forum post by ID:", error);
+    throw error;
+  }
+};
+
+/**
+ * Posts a reply to a specific forum post in the Appwrite database.
+ * @param forum - The forum post to which the reply is being made.
+ * @param comment - The content of the reply.
+ * @param user - The user who is posting the reply.
+ * @param replyingTo - An optional ID of the comment being replied to.
+ * @returns {Promise<void>} - A promise that resolves when the reply is successfully posted.
+ * @throws {Error} - If there is an error posting the reply.
+ */
+export const postReply = async (forum: ForumPostResponse, comment: string, user: UserResponse, replyingTo?: string): Promise<void> => {
+  try {
+    await databases.createDocument(config.databaseId, tableIds.forumComments, ID.unique(), {
+      content: comment,
+      user: user.$id,
+      replyingTo: replyingTo,
+      post: forum.$id,
+    });
+  } catch (error) {
+    console.error("Error posting reply:", error);
     throw error;
   }
 };

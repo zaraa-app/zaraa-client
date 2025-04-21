@@ -109,7 +109,7 @@ const ForumPost = ({ forum, onPress }: ForumPostProps) => {
             <Image
               className="overflow-hidden rounded-full"
               style={{ height: normalize(16), width: normalize(16) }}
-              source={{ uri: forum.user.avatar.toString() }}
+              source={{ uri: forum.user.avatar.toString().replace("/preview", "/view") }}
             />
             <TextContent size="2xs" text={forum.user.name.split(" ")[0]} className="" />
             <TextContent size="3xs" text={relativeDate(forum.$createdAt)} className="font-light italic" />
@@ -117,17 +117,10 @@ const ForumPost = ({ forum, onPress }: ForumPostProps) => {
           <View className="flex-row" style={[styles.gap1]}>
             <View
               className="flex-row items-center justify-center rounded-full bg-neutral-1000"
-              style={[styles.gap1, styles.px1, { paddingVertical: normalize(2) }]}
+              style={[styles.gap1, styles.px2, { paddingVertical: normalize(2) }]}
             >
               <Ionicons name="chatbox-outline" size={normalize(10)} color={"white"} />
-              <TextContent size="2xs" text={"2"} className="text-white" />
-            </View>
-            <View
-              className="flex-row items-center justify-center rounded-full bg-neutral-1000"
-              style={[styles.gap1, styles.px1, { paddingVertical: normalize(2) }]}
-            >
-              <Ionicons name="share-outline" size={normalize(10)} color={"white"} />
-              <TextContent size="2xs" text={"Share"} className="text-white" />
+              <TextContent size="2xs" text={forum.comments.length.toString()} className="text-white" />
             </View>
           </View>
         </View>
