@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/api/services/user.service";
+import { createUserDailyActivity } from "@/api/services/userDailyActivity.service";
 import { UserResponse } from "@/api/types/user.types";
 import { createContext, useContext, useState, useEffect } from "react";
 
@@ -32,6 +33,7 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
           if (user) {
             setIsLoggedIn(true);
             setUser(user);
+            createUserDailyActivity(user.$id);
           } else {
             setIsLoggedIn(false);
             setUser(null);
