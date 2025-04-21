@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const Shimmer = ({ isLoading, className, style }: { isLoading: boolean; className?: string; style?: object }) => {
+const Shimmer = ({ className, style }: { className?: string; style?: object }) => {
   const shimmerAnimation = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current; // Start fully visible
 
@@ -25,18 +25,8 @@ const Shimmer = ({ isLoading, className, style }: { isLoading: boolean; classNam
       ])
     );
 
-    if (isLoading) {
-      shimmerLoop.start();
-    } else {
-      shimmerLoop.stop();
-      // Fade out animation
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 500, // Smooth fade-out
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isLoading]);
+    shimmerLoop.start();
+  }, []);
 
   const translateX = shimmerAnimation.interpolate({
     inputRange: [0, 1],

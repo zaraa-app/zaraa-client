@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, SafeAreaView, ScrollView, TextInput } from "react-native";
 import React, { useRef, useState } from "react";
 import ActionButton from "@/components/ActionButton";
 import FormField from "@/components/FormField";
@@ -11,6 +11,7 @@ import { AccountDetails } from "@/app/(auth)/sign-up";
 import { createUser } from "@/api/services/user.service";
 import { router } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import Toast from "react-native-toast-message";
 
 const SignUpView = () => {
   const passwordRequirements = ["Atleast 1 uppercase letter", "At least 1 number", "Atleast 8 characters"];
@@ -84,24 +85,40 @@ const SignUpView = () => {
    */
   async function handleSignUp() {
     if (!accountDetails.name || !accountDetails.email || !accountDetails.password) {
-      Alert.alert("All fields are required");
+      Toast.show({
+        type: "error",
+        text1: "Missing fields",
+        text2: "Please enter both a name, email and password.",
+      });
       return;
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(accountDetails.email)) {
-      Alert.alert("Invalid email");
+      Toast.show({
+        type: "error",
+        text1: "Invalid email",
+        text2: "Please enter a valid email address.",
+      });
       return;
     }
 
     if (passwordErrors?.length) {
-      Alert.alert("Password does not meet requirements");
+      Toast.show({
+        type: "error",
+        text1: "Password requirements not met",
+        text2: passwordRequirements.join("\n"),
+      });
       return;
     }
 
     if (accountDetails.password !== confirmedPassword) {
-      Alert.alert("Passwords do not match");
+      Toast.show({
+        type: "error",
+        text1: "Passwords do not match",
+        text2: "Please enter the same password in both fields.",
+      });
       return;
     }
 
@@ -114,7 +131,11 @@ const SignUpView = () => {
 
       router.replace("/all-set");
     } catch (error: any) {
-      Alert.alert("Error creating user.", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.message,
+      });
     } finally {
       setIsSubmitting(false);
     }

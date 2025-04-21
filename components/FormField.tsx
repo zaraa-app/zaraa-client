@@ -17,6 +17,8 @@ interface FormFieldProps {
   isPassword?: boolean;
   onSubmitEditing?: () => void;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  className?: string;
+  style?: any;
 }
 
 const FormField = React.forwardRef<TextInput, FormFieldProps>(
@@ -33,10 +35,12 @@ const FormField = React.forwardRef<TextInput, FormFieldProps>(
       showPassword = false,
       textContentType = "none",
       autoCapitalize = "none",
+      className,
+      style,
     },
     ref
   ) => {
-    const textInputStyle = cva("flex-1 overflow-hidden rounded-lg border border-neutral-300 focus:border-primary-300");
+    const textInputStyle = cva(`flex-1 overflow-hidden rounded-lg border border-neutral-300 focus:border-primary-300 ${className}`);
 
     return (
       <View style={[styles.gap1]}>
@@ -49,7 +53,7 @@ const FormField = React.forwardRef<TextInput, FormFieldProps>(
             className={textInputStyle()}
             selectionColor="rgba(109, 190, 69, 1)"
             showSoftInputOnFocus
-            style={[styles.px2, { height: normalize(40) }]}
+            style={[styles.px2, style, { height: normalize(40) }]}
             placeholder={placeholder}
             secureTextEntry={isPassword && !showPassword}
             value={value}
