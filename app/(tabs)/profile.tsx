@@ -41,9 +41,6 @@ const ProfileScreen: React.FC = () => {
       </View>
     );
   }
-
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [checked, setChecked] = useState(false); // only if you're checking correctness later
   return (
     <>
       <View className="flex-1 items-center bg-white p-6">
