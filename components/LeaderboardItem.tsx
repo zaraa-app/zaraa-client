@@ -18,7 +18,7 @@ const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
         <TextContent className="w-10 text-center text-lg text-neutral-1000">{rank}th</TextContent>
         <View className="flex-row items-center justify-start" style={[styles.gap2]}>
           <Image
-            source={{ uri: avatar.toString() }}
+            source={{ uri: avatar.toString().replace("/preview", "/view") }}
             resizeMode="contain"
             className="rounded-full"
             style={{ height: normalize(32), width: normalize(32) }}
@@ -26,7 +26,7 @@ const LeaderboardItem = ({ rank, name, xp, avatar }: LeaderBoardItemProps) => {
           <TextContent className="items-center justify-center text-center text-lg font-semibold text-neutral-1000">{name}</TextContent>
         </View>
       </View>
-      <TextContent className=" text-lg font-bold text-primary-300">{xp ?? "N/A"}</TextContent>
+      <TextContent className=" text-lg font-bold text-primary-300">{xp == 0 ? "0" : xp}</TextContent>
     </View>
   );
 };

@@ -1,7 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": ["dom", "ES2024"],
     "jsx": "react-native",
     "module": "commonjs",
@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["react-native"],
     "checkJs": true,
+    "downlevelIteration": true,
     "paths": {
       "@/*": ["./*"],
       "react": ["./node_modules/react"]
