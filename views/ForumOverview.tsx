@@ -14,6 +14,7 @@ import { postReply } from "@/api/services/forumPost.service";
 
 import CommentItem from "@/components/Forum/CommentItem";
 import CommentInput from "@/components/Forum/CommentInput";
+import Toast from "react-native-toast-message";
 
 interface ForumOverviewProps {
   post: ForumPostResponse;
@@ -67,8 +68,20 @@ const ForumOverview: React.FC<ForumOverviewProps> = ({ post, comments, refetchPo
       setReplyText("");
       setReplyingTo(null);
       await refetchPost();
+      Toast.show({
+        type: "success",
+        text1: "Reply Posted",
+        text2: "Your reply has been successfully posted.",
+        position: "top",
+      });
     } catch (err) {
-      console.error("Failed to post reply:", err);
+      console.log("Failed to post reply:", err);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to post reply. Please try again.",
+        position: "top",
+      });
     } finally {
       setIsSubmitting(false);
     }
