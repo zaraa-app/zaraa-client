@@ -47,7 +47,7 @@ const ProfileScreen: React.FC = () => {
         <View className="w-full items-center">
           <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
             {user.avatar ?
-              <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
+              <Image source={{ uri: user.avatar.toString().replace("/preview", "/view") }} className="h-24 w-24 rounded-full" />
             : <TextContent className="text-3xl font-bold text-white">
                 {user.name
                   .split(" ")

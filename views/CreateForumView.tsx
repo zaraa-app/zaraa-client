@@ -31,7 +31,6 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 
 // Import Rich Editor & Toolbar
 import { RichEditor, RichToolbar, actions } from "react-native-pell-rich-editor";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // Props for visibility toggling (e.g., closing the modal/screen)
 export interface CreateForumViewProps {
