@@ -4,6 +4,7 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileEditView from "@/views/ProfileEditView";
 import TextContent from "@/components/TextContent";
 import { FontAwesome6 } from "@expo/vector-icons";
+
 import UserActivityCalendar from "@/components/Profile/UserActivityCalendar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -40,14 +41,13 @@ const ProfileScreen: React.FC = () => {
       </View>
     );
   }
-
   return (
     <>
       <View className="flex-1 items-center bg-white p-6">
         <View className="w-full items-center">
           <View className="h-24 w-24 items-center justify-center rounded-full bg-white">
             {user.avatar ?
-              <Image source={{ uri: user.avatar.toString() }} className="h-24 w-24 rounded-full" />
+              <Image source={{ uri: user.avatar.toString().replace("/preview", "/view") }} className="h-24 w-24 rounded-full" />
             : <TextContent className="text-3xl font-bold text-white">
                 {user.name
                   .split(" ")

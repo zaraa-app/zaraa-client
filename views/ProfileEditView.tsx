@@ -12,6 +12,7 @@ import { updateUser } from "@/api/services/user.service";
 import Modal from "react-native-modal";
 import styles from "@/utils/styles";
 import { Language } from "@/api/enums/ELanguage.enum";
+import Toast from "react-native-toast-message";
 
 interface ProfileEditViewProps {
   onClose: () => void;
@@ -58,11 +59,21 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
       if (!updatedProfile) throw new Error("Failed to update profile");
 
       setUser(updatedProfile);
-      Alert.alert("Success", "Profile updated successfully!");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Profile updated successfully!",
+        position: "bottom",
+      });
       onClose();
     } catch (error) {
       console.error("Error updating profile:", error);
-      Alert.alert("Error", "Could not update profile.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Could not update profile.",
+        position: "bottom",
+      });
     } finally {
       setLoading(false);
     }
@@ -109,7 +120,12 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
       }
     } catch (error) {
       console.error("Error picking image:", error);
-      Alert.alert("Error", "Could not select image.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Could not select image.",
+        position: "bottom",
+      });
     } finally {
       setUploading(false);
     }
@@ -131,7 +147,7 @@ const ProfileEditView: React.FC<ProfileEditViewProps> = ({ onClose }) => {
           <TouchableOpacity onPress={() => pickImage(false)} className="relative mb-6">
             <View className="h-32 w-32 items-center justify-center rounded-full bg-primary-alpha-10">
               {updatedUser.avatar ?
-                <Image source={{ uri: updatedUser.avatar.toString() }} className="h-32 w-32 rounded-full" />
+                <Image source={{ uri: updatedUser.avatar.toString().replace("/preview", "/view") }} className="h-32 w-32 rounded-full" />
               : <TextContent className="text-4xl font-bold text-white">
                   {updatedUser.name
                     .split(" ")

@@ -1,7 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCircle as faSolidCircle, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircle as faSolidCircle,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle, faCircle as faRegularCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 
 interface AnswerOptionProps {
@@ -13,7 +17,14 @@ interface AnswerOptionProps {
   onPress: () => void;
 }
 
-const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect, selected, checked, onPress }) => {
+const AnswerOption: React.FC<AnswerOptionProps> = ({
+  letter,
+  text,
+  isCorrect,
+  selected,
+  checked,
+  onPress,
+}) => {
   const getBackgroundColor = () => {
     if (checked && selected) {
       return isCorrect ? "#6BBE51" : "#D5001B"; // green or red after check
@@ -47,12 +58,12 @@ const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect, se
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      className="mb-3 w-full flex-row items-center justify-between rounded-xl p-4"
+      className="flex-row items-center justify-between p-4 rounded-xl w-full mb-3"
       style={{ backgroundColor: getBackgroundColor() }}
     >
       {/* Left: Letter + Text */}
-      <View className="flex-1 flex-row items-center">
-        <Text className="mr-4 font-bold" style={{ color: getTextColor() }}>
+      <View className="flex-row items-center flex-1">
+        <Text className="font-bold mr-4" style={{ color: getTextColor() }}>
           {letter}
         </Text>
         <Text style={{ color: getTextColor() }}>{text}</Text>
