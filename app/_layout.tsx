@@ -4,6 +4,8 @@ import React, { useEffect } from "react";
 import "../global.css";
 import GlobalProvider, { useGlobalContext } from "@/context/GlobalProvider";
 import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/utils/ToastConfig";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,6 +37,7 @@ export default function RootLayout() {
   return (
     <GlobalProvider>
       <RootLayoutContent />
+      <Toast position="bottom" />
     </GlobalProvider>
   );
 }
