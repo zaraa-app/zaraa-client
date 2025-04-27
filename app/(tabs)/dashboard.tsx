@@ -207,7 +207,7 @@ const Dashboard = () => {
                 lessons.findIndex((l) => l.$id === selectedLesson.$id)
               )}
               onPress={() => {
-                console.error("Function not implemented.");
+                router.push("/quiz/" + selectedLesson.$id);
               }}
             />
           )}

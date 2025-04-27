@@ -78,10 +78,10 @@ const TextContent = ({ className, children, style, text, onPress, size = "base",
       textStyle = [styles.textBase, styles.leadingNormal];
       break;
     case "lg":
-      textStyle = [styles.textLg, styles.leadingRelaxed];
+      textStyle = [styles.textLg];
       break;
     case "xl":
-      textStyle = [styles.textXl, styles.leadingRelaxed];
+      textStyle = [styles.textXl];
       break;
   }
 

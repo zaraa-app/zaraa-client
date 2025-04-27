@@ -22,6 +22,8 @@ const PageLoader = ({ pageType }: PageLoaderProps) => {
       return <DashboardSkeleton />;
     case "forums":
       return <ForumsSkeleton />;
+    case "quiz/[lessonId]":
+      return <QuizPageSkeleton />;
   }
 
   return (
@@ -30,6 +32,32 @@ const PageLoader = ({ pageType }: PageLoaderProps) => {
     </View>
   );
 };
+
+const QuizPageSkeleton = () => (
+  <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-primary-300 px-4 pt-4">
+    <View className="flex-1 gap-4 rounded-3xl bg-white p-4">
+      {/* top row: close icon + progress track */}
+      <View className="flex-row">
+        <Shimmer className="h-12 w-full rounded-full" />
+      </View>
+
+      {/* question text */}
+      <Shimmer className="w-full self-center rounded-xl" />
+
+      {/* four answer options */}
+      <View className="flex-1 justify-between gap-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Shimmer key={i} className="w-full rounded-xl" style={{ height: normalize(56) }} />
+        ))}
+      </View>
+
+      {/* submit / next button */}
+      <View className="h-24">
+        <Shimmer className="w-full rounded-full" style={{ height: normalize(56) }} />
+      </View>
+    </View>
+  </SafeAreaView>
+);
 
 const TopBarSkeleton = () => {
   return (
