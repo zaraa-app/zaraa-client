@@ -14,15 +14,12 @@ const SWIPE_THRESHOLD = 25;
 
 const chapterColors = [
   "rgba(109, 190, 69, 1)", // Primary green
-  "rgba(255, 99, 71, 1)", // Tomato red
-  "rgba(54, 162, 235, 1)", // Blue
-  "rgba(255, 206, 86, 1)", // Yellow
-  "rgba(75, 192, 192, 1)", // Teal
-  "rgba(153, 102, 255, 1)", // Purple
-  "rgba(255, 159, 64, 1)", // Orange
-  "rgba(255, 20, 147, 1)", // Deep Pink
-  "rgba(50, 205, 50, 1)", // Lime Green
-  "rgba(0, 191, 255, 1)", // Sky Blue
+  "rgba(87, 152, 55, 1)", // Dark Green
+  "rgba(55, 102, 36, 1)", // Very Dark Green
+  "rgba(50, 95, 29, 1)", // rest are darker shades of primary green
+  "rgba(35, 70, 20, 1)",
+  "rgba(25, 60, 15, 1)",
+  "rgba(10, 30, 7, 1)",
 ];
 
 interface ChapterSelectProps {
