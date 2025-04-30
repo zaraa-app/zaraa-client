@@ -4,18 +4,21 @@ import styles from "@/utils/styles";
 import TextContent from "../TextContent";
 
 export interface InfoTabProps {
-  content: string;
+  content?: string;
   icon?: React.ReactNode;
+  color?: "white" | "black";
 }
 
-const InfoTab = ({ content, icon }: InfoTabProps) => {
+const InfoTab = ({ content, icon, color }: InfoTabProps) => {
   return (
     <View
-      className="min-h-[45px] min-w-[64px] flex-row items-center justify-center rounded-full bg-neutral-1000"
-      style={[styles.px4, styles.py3, styles.gap1]}
+      className={`min-h-[32px] min-w-[32px] flex-row items-center justify-center rounded-full ${
+        color === "white" ? "bg-white" : "bg-black"
+      }`}
+      style={[styles.p4, styles.gap1]}
     >
       {icon}
-      <TextContent text={content} className="font-bold text-white" />
+      {content && <TextContent text={content} className={`font-bold ${color === "white" ? "text-black" : "text-white"}`} />}
     </View>
   );
 };
