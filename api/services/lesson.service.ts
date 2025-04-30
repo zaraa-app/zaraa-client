@@ -48,3 +48,24 @@ export const getLessonsByChapter = async (chapterId: string): Promise<LessonResp
     return [];
   }
 };
+
+/**
+ * Retrieves a lesson by its ID from the database.
+ * @param {string} lessonId - The ID of the lesson to retrieve.
+ * @returns {Promise<LessonResponse | null>} - A promise that resolves to a LessonResponse object if found, otherwise null.
+ * @throws {Error} - If there is an error fetching the lesson from the database.
+ */
+export const getLessonById = async (lessonId: string): Promise<LessonResponse | null> => {
+  try {
+    const lesson = await databases.getDocument(config.databaseId, tableIds.lessons, lessonId);
+
+    if (!lesson) {
+      return null;
+    }
+
+    return lesson as LessonResponse;
+  } catch (error) {
+    console.error("Error fetching lesson:", error);
+    return null;
+  }
+};

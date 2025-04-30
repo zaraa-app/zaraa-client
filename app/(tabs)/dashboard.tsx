@@ -16,6 +16,7 @@ import TextContent from "@/components/TextContent";
 import PageLoader from "@/components/PageLoader/PageLoader";
 import { useChapter } from "@/context/ChapterContext";
 import { ChapterResponse } from "@/api/types/chapter.types";
+import ActionButton from "@/components/ActionButton";
 
 const Dashboard = () => {
   const { isLoggedIn, user } = useGlobalContext();
@@ -26,6 +27,9 @@ const Dashboard = () => {
   const [userProgress, setUserProgress] = useState<UserLessonProgressResponse[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<LessonResponse>({} as LessonResponse);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const curtainTranslateY = useRef(new Animated.Value(-100)).current;
+  const curtainOpacity = useRef(new Animated.Value(0)).current;
+  const [showOutOfHeartsCurtain, setShowOutOfHeartsCurtain] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -157,63 +161,131 @@ const Dashboard = () => {
     return ELessonStatus.Locked;
   };
 
+  const onLessonPress = (lesson: LessonResponse) => {
+    if (user?.hearts && user.hearts > 0) {
+      router.push("/quiz/" + selectedLesson.$id);
+      return;
+    }
+
+    setShowOutOfHeartsCurtain(true);
+
+    Animated.parallel([
+      Animated.timing(curtainTranslateY, {
+        toValue: 0,
+        duration: 350,
+        useNativeDriver: true,
+      }),
+      Animated.timing(curtainOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(curtainTranslateY, {
+          toValue: -100,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(curtainOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(() => setShowOutOfHeartsCurtain(false));
+    }, 3500);
+  };
+
   if (isLoading) {
     return <PageLoader pageType="dashboard" />;
   }
 
   return (
-    <Animated.View className="flex-1" style={[styles.pb6, { marginBottom: normalize(92), opacity: fadeAnim }]}>
-      {lessons.length === 0 ?
-        <View className="flex-1 items-center justify-center">
-          <TextContent
-            size="lg"
-            text="No lessons found..."
-            className="rounded-full bg-primary-300 font-bold italic text-white"
-            style={[styles.p8]}
-          />
-        </View>
-      : <>
-          <ChapterSelect onSelect={onChapterSelect} />
-          <ScrollView
-            ref={scrollViewRef}
-            horizontal
-            onScroll={onScroll}
-            onMomentumScrollEnd={onMomentumScrollEnd}
-            scrollEventThrottle={16}
-            contentContainerClassName="items-center"
-            showsHorizontalScrollIndicator={false}
-            style={[styles.px6]}
+    <>
+      {showOutOfHeartsCurtain && (
+        <Animated.View
+          className="absolute left-0 right-0 top-0 z-50 items-center px-6 pb-4 pt-2"
+          style={{
+            transform: [{ translateY: curtainTranslateY }],
+            opacity: curtainOpacity,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderBottomLeftRadius: 24,
+              borderBottomRightRadius: 24,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              paddingVertical: 14,
+              paddingHorizontal: 16,
+              width: "100%",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 2,
+              elevation: 6,
+              alignItems: "center",
+            }}
           >
-            {lessons.map((lesson, index) => (
-              <LessonButton
-                key={lesson.$id}
-                lesson={lesson}
-                status={getLessonStatus(lesson.$id, index)}
-                style={{ marginTop: index % 2 !== 0 ? normalize(100) : normalize(-100) }}
-                onPress={setSelectedLesson}
-                onLayout={handleLessonLayout(lesson.$id)}
-              />
-            ))}
-          </ScrollView>
-          {selectedLesson && (
-            <LessonInfo
-              title={selectedLesson.title}
-              content={selectedLesson.content}
-              difficulty={selectedLesson.difficulty}
-              avgTime={selectedLesson.avgTime}
-              xpValue={selectedLesson.xpValue}
-              status={getLessonStatus(
-                selectedLesson.$id,
-                lessons.findIndex((l) => l.$id === selectedLesson.$id)
-              )}
-              onPress={() => {
-                router.push("/quiz/" + selectedLesson.$id);
-              }}
+            <TextContent text="You're out of hearts 💔" size="lg" className="mb-1 text-center font-bold text-red-600" />
+            <TextContent text="Come back later or earn more to start this lesson." className="text-center text-gray-600" />
+          </View>
+        </Animated.View>
+      )}
+      <Animated.View className="flex-1" style={[styles.pb6, { marginBottom: normalize(92), opacity: fadeAnim }]}>
+        {lessons.length === 0 ?
+          <View className="flex-1 items-center justify-center">
+            <TextContent
+              size="lg"
+              text="No lessons found..."
+              className="rounded-full bg-primary-300 font-bold italic text-white"
+              style={[styles.p8]}
             />
-          )}
-        </>
-      }
-    </Animated.View>
+          </View>
+        : <>
+            <ChapterSelect onSelect={onChapterSelect} />
+            <ScrollView
+              ref={scrollViewRef}
+              horizontal
+              onScroll={onScroll}
+              onMomentumScrollEnd={onMomentumScrollEnd}
+              scrollEventThrottle={16}
+              contentContainerClassName="items-center"
+              showsHorizontalScrollIndicator={false}
+              style={[styles.px6]}
+            >
+              {lessons.map((lesson, index) => (
+                <LessonButton
+                  key={lesson.$id}
+                  lesson={lesson}
+                  status={getLessonStatus(lesson.$id, index)}
+                  style={{ marginTop: index % 2 !== 0 ? normalize(100) : normalize(-100) }}
+                  onPress={setSelectedLesson}
+                  onLayout={handleLessonLayout(lesson.$id)}
+                />
+              ))}
+            </ScrollView>
+            {selectedLesson && (
+              <LessonInfo
+                title={selectedLesson.title}
+                content={selectedLesson.content}
+                difficulty={selectedLesson.difficulty}
+                avgTime={selectedLesson.avgTime}
+                xpValue={selectedLesson.xpValue}
+                status={getLessonStatus(
+                  selectedLesson.$id,
+                  lessons.findIndex((existingLesson) => existingLesson.$id === selectedLesson.$id)
+                )}
+                onPress={() => onLessonPress(selectedLesson)}
+              />
+            )}
+          </>
+        }
+      </Animated.View>
+    </>
   );
 };
 
