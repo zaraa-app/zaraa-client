@@ -203,3 +203,46 @@ export const updateUser = async (existingUser: UserResponse, newUser: UserRespon
     return null;
   }
 };
+
+/**
+ * Decrements a user's hearts count.
+ * @param {UserResponse} user - The user whose hearts are to be decremented.
+ * @returns {Promise<UserResponse | null>} - A promise that resolves to the updated user document if successful, otherwise null.
+ * @throws {Error} - If the user is not found or if there is an error decrementing the hearts.
+ */
+export const decrementHearts = async (user: UserResponse | null): Promise<UserResponse | null> => {
+  try {
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, user.$id, { hearts: user.hearts - 1 });
+
+    return updatedUser as UserResponse;
+  } catch (error: any) {
+    console.error("Error decrementing hearts:", error);
+    return null;
+  }
+};
+
+/**
+ * Adds XP to a user's account.
+ * @param {UserResponse | null} user - The user to whom XP is to be added.
+ * @param {number} xp - The amount of XP to add.
+ * @returns {Promise<UserResponse | null>} - A promise that resolves to the updated user document if successful, otherwise null.
+ * @throws {Error} - If the user is not found or if there is an error adding XP.
+ */
+export const addXp = async (user: UserResponse | null, xp: number): Promise<UserResponse | null> => {
+  try {
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = await databases.updateDocument(config.databaseId, tableIds.users, user.$id, { xp: user.xp + xp });
+
+    return updatedUser as UserResponse;
+  } catch (error: any) {
+    console.error("Error adding XP:", error);
+    return null;
+  }
+};

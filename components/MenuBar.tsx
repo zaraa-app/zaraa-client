@@ -17,7 +17,11 @@ import ProfileFocused from "@/assets/icons/profile-focused.svg";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { selectionAsync } from "expo-haptics";
 
-export const MenuBar = ({ state, navigation }: BottomTabBarProps) => {
+export interface MenuBarProps {
+  isHidden?: boolean;
+}
+
+export const MenuBar = ({ state, navigation, isHidden }: BottomTabBarProps & MenuBarProps) => {
   const { buildHref } = useLinkBuilder();
 
   const menuBarIcons = {
@@ -26,6 +30,10 @@ export const MenuBar = ({ state, navigation }: BottomTabBarProps) => {
     forums: { default: Forums, focused: ForumsFocused },
     profile: { default: Profile, focused: ProfileFocused },
   };
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <View className="absolute bottom-10 flex-row items-center justify-between rounded-full bg-neutral-1000" style={[styles.mx6, styles.p2]}>

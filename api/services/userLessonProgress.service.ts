@@ -1,6 +1,6 @@
-import { Databases, Query } from "react-native-appwrite";
+import { Databases, ID, Query } from "react-native-appwrite";
 import { client, config, tableIds } from "../appwrite";
-import { UserLessonProgressResponse } from "../types/userLessonProgress.types";
+import { ELessonStatus, UserLessonProgressResponse } from "../types/userLessonProgress.types";
 
 const databases: Databases = new Databases(client);
 
@@ -22,5 +22,28 @@ export const getUserLessonProgress = async (userId: string): Promise<UserLessonP
   } catch (error: any) {
     console.log("Error getting user lesson progress:", error);
     return [];
+  }
+};
+
+/**
+ * Updates the user's lesson progress by marking a lesson as completed.
+ * @param {string} userId - The ID of the user whose lesson progress is to be updated.
+ * @param {string} lessonId - The ID of the lesson to be marked as completed.
+ * @returns {Promise<UserLessonProgressResponse | null>} - A promise that resolves to the UserLessonProgressResponse object if successful, otherwise null.
+ * @throws {Error} - If there is an error updating the user's lesson progress.
+ */
+export const updateUserLessonProgress = async (userId: string, lessonId: string): Promise<UserLessonProgressResponse | null> => {
+  try {
+    const userLessonProgress = await databases.createDocument(config.databaseId, tableIds.userLessonProgress, ID.unique(), {
+      user: userId,
+      lesson: lessonId,
+      dateCompleted: new Date().toISOString(),
+      status: ELessonStatus.Completed,
+    });
+
+    return userLessonProgress as UserLessonProgressResponse;
+  } catch (error: any) {
+    console.log("Error updating user lesson progress:", error);
+    return null;
   }
 };
