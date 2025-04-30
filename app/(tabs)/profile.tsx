@@ -64,7 +64,7 @@ const ProfileScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <Text className="text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
+          <Text className="text-center text-lg italic text-gray-500">{getLevelDescription(user.xp)}</Text>
         </View>
         <ScrollView className="mt-6 w-full" showsVerticalScrollIndicator={false}>
           <View className="mt-6 w-full max-w-md items-center">

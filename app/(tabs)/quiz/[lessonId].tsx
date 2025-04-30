@@ -47,6 +47,10 @@ const victorySubtexts = [
   "That was *mint*. Ready to leaf into the next lesson?",
 ];
 
+const index = Math.floor(Math.random() * victoryTitles.length);
+const victoryTitle = victoryTitles[index];
+const victorySubtitle = victorySubtexts[index];
+
 export default function LessonQuiz() {
   const { user, setUser } = useGlobalContext();
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
@@ -63,9 +67,6 @@ export default function LessonQuiz() {
   const [showOutOfHeartsModal, setShowOutOfHeartsModal] = useState(false);
   const [retryQueue, setRetryQueue] = useState<LessonQuestionResponse[]>([]);
   const [retryMode, setRetryMode] = useState(false);
-
-  const [victoryTitle, setVictoryTitle] = useState("");
-  const [victorySubtitle, setVictorySubtitle] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -140,9 +141,6 @@ export default function LessonQuiz() {
       return;
     }
 
-    const index = Math.floor(Math.random() * victoryTitles.length);
-    setVictoryTitle(victoryTitles[index]);
-    setVictorySubtitle(victorySubtexts[index]);
     setQuizComplete(true);
   }, [checked, currentIndex, selectedOption, questions, retryQueue, retryMode, correctAnswers]);
 
@@ -164,7 +162,7 @@ export default function LessonQuiz() {
   const currentList = retryMode ? retryQueue : questions;
   const total = currentList.length;
   const current = currentList[currentIndex];
-  const correctText = current.options.find((option) => option.isCorrect)?.answerText;
+  const correctText = current?.options.find((option) => option.isCorrect)?.answerText ?? "";
   const isLast = currentIndex + 1 === total;
   const buttonTitle =
     !checked ? "Check Answer"
@@ -172,7 +170,7 @@ export default function LessonQuiz() {
     : isLast ? "Retry Mistakes"
     : "Next Question";
 
-  if (quizComplete) {
+  if (quizComplete || questions.length === 0) {
     return (
       <SafeAreaView className="flex-1 bg-white px-6 pt-8">
         <View className="flex-1 items-center justify-center">
