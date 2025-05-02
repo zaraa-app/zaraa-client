@@ -1,14 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Image, Text } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons";
-import Heart from "@/assets/icons/heart.svg";
 
-import AnswerOption from "@/components/QuizComponents/AnswerOption";
 import AnswerFeedback from "@/components/QuizComponents/AnswerFeedback";
-import ProgressBar from "@/components/ProgressBar";
 import ActionButton from "@/components/ActionButton";
 import TextContent from "@/components/TextContent";
 import PageLoader from "@/components/PageLoader/PageLoader";
@@ -20,6 +16,10 @@ import { addXp, decrementHearts } from "@/api/services/user.service";
 import { LessonResponse } from "@/api/types/lesson.types";
 import { getLessonById } from "@/api/services/lesson.service";
 import { updateUserLessonProgress } from "@/api/services/userLessonProgress.service";
+import OutOfHeartsModal from "@/components/QuizComponents/OutOfHeartsModal";
+import QuizHeader from "@/components/QuizComponents/QuizHeader";
+import QuizQuestion from "@/components/QuizComponents/QuizQuestion";
+import ExitQuizModal from "@/components/QuizComponents/ExitQuizModal";
 
 const victoryTitles = [
   "Cactus-tastic! 🌟",
@@ -64,62 +64,71 @@ export default function LessonQuiz() {
   const [isLoading, setIsLoading] = useState(true);
   const [quizComplete, setQuizComplete] = useState(false);
 
+  const [showExitModal, setShowExitModal] = useState(false);
   const [showOutOfHeartsModal, setShowOutOfHeartsModal] = useState(false);
   const [retryQueue, setRetryQueue] = useState<LessonQuestionResponse[]>([]);
   const [retryMode, setRetryMode] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const currentLesson = await getLessonById(lessonId);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-      if (!currentLesson) {
-        router.back();
-        return;
-      }
+      (async () => {
+        setIsLoading(true);
 
-      setLesson(currentLesson);
+        const currentLesson = await getLessonById(lessonId);
+        const lessonQuestions = await getLessonQuestions(lessonId);
+        const sorted = lessonQuestions?.sort((a, b) => a.index - b.index) ?? [];
 
-      const questions = await getLessonQuestions(lessonId);
-      if (questions?.length) {
-        const sorted = questions.sort((a, b) => a.index - b.index);
-        setQuestions(sorted);
-        setCurrentIndex(0);
-      }
-      setIsLoading(false);
-    })();
-  }, [lessonId]);
+        if (isActive) {
+          if (!currentLesson) {
+            router.back();
+            return;
+          }
+
+          setLesson(currentLesson);
+          setQuestions(sorted);
+          setCurrentIndex(0);
+          setSelectedOption(null);
+          setChecked(false);
+          setCorrectAnswers(0);
+          setRetryQueue([]);
+          setRetryMode(false);
+          setQuizComplete(false);
+          setIsLoading(false);
+        }
+      })();
+
+      return () => {
+        isActive = false;
+      };
+    }, [lessonId])
+  );
 
   const handleAction = useCallback(async () => {
     const currentList = retryMode ? retryQueue : questions;
     const currentQuestion = currentList[currentIndex];
-    const correctText = currentQuestion.options.find((option) => option.isCorrect)?.answerText;
+    const correctText = currentQuestion.options.find((o) => o.isCorrect)?.answerText;
     const isCorrect = selectedOption === correctText;
 
     if (!checked) {
       setChecked(true);
       if (isCorrect) {
-        setCorrectAnswers((count) => count + 1);
+        setCorrectAnswers((prev) => prev + 1);
       } else {
-        // Call an api to decrement hearts
-        const updatedUserHearts = await decrementHearts(user);
-
-        if (updatedUserHearts) {
-          setUser(updatedUserHearts);
-
-          if (updatedUserHearts.hearts <= 0) {
-            setShowOutOfHeartsModal(true);
-          }
+        const updatedUser = await decrementHearts(user);
+        if (updatedUser) {
+          setUser(updatedUser);
+          if (updatedUser.hearts <= 0) setShowOutOfHeartsModal(true);
         }
-
         setRetryQueue((prev) => [...prev, currentQuestion]);
       }
       return;
     }
 
-    const isLastQuestion = currentIndex + 1 === currentList.length;
-
-    if (!isLastQuestion) {
-      setCurrentIndex((index) => index + 1);
+    const isLast = currentIndex + 1 === currentList.length;
+    if (!isLast) {
+      setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
       setChecked(false);
       return;
@@ -142,28 +151,44 @@ export default function LessonQuiz() {
     }
 
     setQuizComplete(true);
-  }, [checked, currentIndex, selectedOption, questions, retryQueue, retryMode, correctAnswers]);
+  }, [checked, currentIndex, selectedOption, questions, retryQueue, retryMode]);
 
   const handleFinishQuiz = async () => {
-    const updatedUserWithXp = await addXp(user, lesson?.xpValue ?? 0);
-
-    if (updatedUserWithXp) {
-      setUser(updatedUserWithXp);
-    }
-
     if (!user) return;
+    const updatedUser = await addXp(user, lesson?.xpValue ?? 0);
+    if (updatedUser) setUser(updatedUser);
 
     await updateUserLessonProgress(user.$id, lessonId);
+    setIsLoading(true);
+    setSelectedOption(null);
+    setChecked(false);
+    setCorrectAnswers(0);
+    setRetryQueue([]);
+    setRetryMode(false);
+    setCurrentIndex(0);
+    setQuizComplete(false);
     router.push("/dashboard");
+  };
+
+  const handleConfirmExit = () => {
+    setSelectedOption(null);
+    setChecked(false);
+    setCorrectAnswers(0);
+    setRetryQueue([]);
+    setRetryMode(false);
+    setCurrentIndex(0);
+    setQuizComplete(false);
+    setShowExitModal(false);
+    router.back();
   };
 
   if (isLoading) return <PageLoader pageType="quiz/[lessonId]" />;
 
   const currentList = retryMode ? retryQueue : questions;
-  const total = currentList.length;
   const current = currentList[currentIndex];
-  const correctText = current?.options.find((option) => option.isCorrect)?.answerText ?? "";
-  const isLast = currentIndex + 1 === total;
+  const correctText = current?.options.find((o) => o.isCorrect)?.answerText ?? "";
+  const isLast = currentIndex + 1 === currentList.length;
+
   const buttonTitle =
     !checked ? "Check Answer"
     : isLast && retryMode ? "Finish"
@@ -197,60 +222,24 @@ export default function LessonQuiz() {
   return (
     <View className="relative flex-1">
       {checked && <AnswerFeedback isCorrect={selectedOption === correctText} correctAnswer={correctText} onNext={handleAction} />}
-      {showOutOfHeartsModal && (
-        <View className="absolute inset-0 z-50 items-center justify-center bg-black/50 px-8">
-          <View className="w-full items-center rounded-2xl bg-white p-6 shadow-xl">
-            <TextContent text="You're out of hearts 💔" size="lg" className="mb-2 text-center font-bold" />
-            <TextContent
-              text="You need more hearts to continue this lesson. Come back later or earn more to try again!"
-              className="mb-4 text-center text-gray-600"
-            />
-            <ActionButton title="Go Back" onPress={() => router.back()} className="w-full" />
-          </View>
-        </View>
-      )}
+      {showOutOfHeartsModal && <OutOfHeartsModal />}
+
       <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-primary-300 px-4 py-4">
         <View className="flex-1 gap-4 rounded-3xl bg-white p-4">
-          <View className="flex-row items-center justify-between gap-2">
-            <Ionicons name="close" size={24} color="#374151" onPress={() => router.back()} />
-            <ProgressBar progress={correctAnswers / questions.length} />
-            <View className="flex-row items-center gap-1">
-              <Heart width={24} height={24} />
-              <TextContent text={user?.hearts.toString()} className="text-center font-bold" />
-            </View>
-          </View>
+          <QuizHeader
+            progress={correctAnswers / questions.length}
+            hearts={user?.hearts ?? 0}
+            onExitConfirm={() => setShowExitModal(true)}
+          />
 
-          <TextContent size="lg" text={current.questionText} className="text-center font-bold" />
-
-          {current.questionImage && (
-            <Image
-              source={{
-                uri: current.questionImage.toString().replace("/preview", "/view"),
-              }}
-              className="my-2 h-1/4 w-full rounded-xl"
-              resizeMode="contain"
-            />
-          )}
-
-          <View className="flex-1 justify-between">
-            {current.options.map((opt, i) => (
-              <AnswerOption
-                key={i}
-                letter={String.fromCharCode(65 + i)}
-                text={opt.answerText}
-                isCorrect={opt.isCorrect}
-                selected={selectedOption === opt.answerText}
-                checked={checked}
-                onPress={() => !checked && setSelectedOption(opt.answerText)}
-              />
-            ))}
-          </View>
+          <QuizQuestion question={current} selectedOption={selectedOption} checked={checked} onSelect={setSelectedOption} />
 
           <ActionButton title={buttonTitle} onPress={handleAction} disabled={!selectedOption && !checked} />
         </View>
 
         <StatusBar style="light" />
       </SafeAreaView>
+      {showExitModal && <ExitQuizModal visible={showExitModal} onConfirm={handleConfirmExit} onCancel={() => setShowExitModal(false)} />}
     </View>
   );
 }

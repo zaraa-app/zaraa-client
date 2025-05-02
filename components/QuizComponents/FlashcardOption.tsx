@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, Image } from "react-native";
-import { FontAwesome6 } from "@expo/vector-icons";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, Extrapolate } from "react-native-reanimated";
+import { Text, Pressable, Image } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate } from "react-native-reanimated";
 
 interface FlashcardOptionProps {
   id: string;
@@ -14,8 +13,8 @@ interface FlashcardOptionProps {
   onPress: () => void;
 }
 
-  const FlashcardOption: React.FC<FlashcardOptionProps> = ({ answer, letter, isSelected, isCorrect, checked = false, imageUrl, onPress }) => {
-  const flip = useSharedValue(0); // 0 = front, 180 = back
+const FlashcardOption: React.FC<FlashcardOptionProps> = ({ answer, letter, isSelected, isCorrect, checked = false, imageUrl, onPress }) => {
+  const flip = useSharedValue(0);
 
   useEffect(() => {
     flip.value = withTiming(isSelected ? 180 : 0, { duration: 400 });
@@ -55,10 +54,21 @@ interface FlashcardOptionProps {
     : "transparent";
 
   return (
-    <Pressable onPress={onPress} className="my-2 aspect-square w-[48%] overflow-hidden rounded-xl" style={{ borderWidth: 4, borderColor }}>
-      <Animated.View className="items-center justify-center rounded-xl bg-white" style={[frontAnimatedStyle, { flex: 1, backgroundColor: "#333333" }]}>
-      <Text className="text-4xl font-bold text-white">{letter}</Text>
-      <Text className="text-4xl font-bold text-white">{answer}</Text>
+    <Pressable
+      onPress={onPress}
+      className="w-[48%] overflow-hidden rounded-2xl"
+      style={{
+        aspectRatio: 2 / 3,
+        borderWidth: isSelected ? 4 : 0,
+        borderColor,
+      }}
+    >
+      <Animated.View
+        className="items-center justify-center rounded-xl bg-white"
+        style={[frontAnimatedStyle, { flex: 1, backgroundColor: "#333333" }]}
+      >
+        <Text className="text-2xl font-black text-white">{letter}</Text>
+        <Text className="text-xl text-white">{answer}</Text>
       </Animated.View>
 
       <Animated.View className="items-center justify-center rounded-xl bg-white" style={[backAnimatedStyle, { flex: 1 }]}>
@@ -66,12 +76,6 @@ interface FlashcardOptionProps {
           <Image source={{ uri: imageUrl }} className="h-full w-full rounded-xl" resizeMode="cover" />
         : <Text className="text-center">No Image</Text>}
       </Animated.View>
-
-      {checked && isSelected && (
-        <View className="absolute right-2.5 top-2.5 z-10 rounded-full bg-black/60 p-1.5">
-          <FontAwesome6 name={isCorrect ? "check" : "xmark"} size={24} color="#fff" />
-        </View>
-      )}
     </Pressable>
   );
 };
