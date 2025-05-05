@@ -78,7 +78,7 @@ const LessonInfo = ({ status, title, content, difficulty, avgTime, xpValue, onPr
             </TextContent>
           </LessonDetail>
           <LessonDetail label="Avg. Time">
-            <TextContent size="xs" className="font-bold ">
+            <TextContent size="xs" className="font-bold">
               {avgTime} min
             </TextContent>
           </LessonDetail>

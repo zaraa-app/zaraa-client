@@ -1,36 +1,57 @@
 # Zaraa Client
 
-This repository contains the code for the Zaraa client application. This app is a React Native app built with Expo and uses the Appwrite backend.
+Zaraa is a gamified plant-learning mobile app built with **React Native**, **Expo**, and powered by **Appwrite**. This repository contains the source code for the client application.
 
-## Features
+## 🌿 Features
 
-- Authentication with Appwrite
-- User profile management
-- Forums
-- Gamified Learning
+- 🔐 Authentication via Appwrite
+- 👤 User profile & activity tracking
+- 🗣️ Community forums
+- 🧠 Gamified quiz-based learning
 
-## Installation
+## 🚀 Getting Started
 
-1. Clone the repository
-2. Install dependencies with `npm install`
-3. Start the app with `npm start`
+### 1. Clone the repository
 
-## Development
+```bash
+git clone https://github.com/your-username/zaraa-client.git
+cd zaraa-client
+```
 
-The app uses Expo for development. You can start the app with `npm start` and it will open in the Expo client app on your device.
+### 2. Install dependencies
 
-## Testing
+```bash
+yarn install
+```
 
-The app uses Jest for testing. You can run the tests with `npm test`.
+### 3. Start the development server
 
-## Deployment
+```bash
+npx expo start
+```
 
-The app can be deployed to the Expo client app or to a standalone app.
+> 💡 Make sure you have the Expo Go app installed on your phone to preview the app.
 
-## Contributing
 
-Contributions are welcome! Please open a pull request to contribute to the app.
+## 📦 Deployment
 
-## License
+You can deploy the app:
 
-The app is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+- To **Expo Go** during development
+- As a **standalone build** using:
+
+```bash
+npx expo export
+npx expo build:android
+npx expo build:ios
+```
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!  
+Please fork the repo and submit a pull request.
+
+## 📄 License
+
+This project is licensed under the MIT License.  
+See the [LICENSE](https://mit-license.org/) file for full details.

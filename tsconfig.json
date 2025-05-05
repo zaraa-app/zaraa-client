@@ -4,17 +4,14 @@
     "target": "es2015",
     "lib": ["dom", "ES2024"],
     "jsx": "react-native",
-    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["react-native"],
-    "checkJs": true,
+    "types": ["react", "react-native"],
     "downlevelIteration": true,
     "paths": {
-      "@/*": ["./*"],
-      "react": ["./node_modules/react"]
+      "@/*": ["./*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", "declarations.d.ts", "prettier.config.js"]

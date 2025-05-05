@@ -108,7 +108,7 @@ const ForumsSkeleton = () => {
     <View className="w-full" style={[styles.mt2]}>
       <View style={[styles.gap2, styles.mb4]}>
         <View className="flex-row items-center justify-between" style={[styles.px6]}>
-          <HeadingContent className="flex-1 " size="h5" heading="Forums" />
+          <HeadingContent className="flex-1" size="h5" heading="Forums" />
           <TouchableOpacity
             className="flex-row items-center justify-center"
             style={[styles.gap1]}
@@ -119,17 +119,6 @@ const ForumsSkeleton = () => {
             <TextContent text="Create Post" size="sm" />
           </TouchableOpacity>
         </View>
-        <View style={[styles.px6]}>
-          <Shimmer style={[styles.gap1, styles.p6]} />
-        </View>
-        <FlatList
-          style={[styles.px6]}
-          contentContainerStyle={[styles.gap1]}
-          data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-          renderItem={() => <Shimmer style={[styles.py3, styles.px8]} />}
-          showsHorizontalScrollIndicator={false}
-          horizontal
-        />
       </View>
       <FlatList
         style={[styles.px6]}

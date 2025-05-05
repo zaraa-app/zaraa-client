@@ -1,8 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCircle as faSolidCircle } from "@fortawesome/free-solid-svg-icons";
-import { faCheckCircle, faCircle as faRegularCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 interface AnswerOptionProps {
   letter: string;
@@ -13,33 +11,28 @@ interface AnswerOptionProps {
   onPress: () => void;
 }
 
-const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect, selected, checked, onPress }) => {
+const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect, selected, checked, onPress }: AnswerOptionProps) => {
   const getBackgroundColor = () => {
     if (checked && selected) {
       return isCorrect ? "#6BBE51" : "#D5001B"; // green or red after check
     }
-    if (selected) {
-      return "#D7CFBC"; // highlighted on select
-    }
-    return "#F4F1EC"; // default
+    if (selected) return "#D7CFBC";
+    return "#F4F1EC";
   };
 
   const getTextColor = () => {
-    if (checked && selected) return "#FFFFFF";
-    return "#000000";
+    return checked && selected ? "#FFFFFF" : "#000000";
   };
 
-  const getIcon = () => {
+  const getIconName = () => {
     if (checked && selected) {
-      return isCorrect ? faCheckCircle : faTimesCircle;
+      return isCorrect ? "checkmark-circle" : "close-circle";
     }
-    return selected ? faSolidCircle : faRegularCircle;
+    return selected ? "ellipse" : "ellipse-outline";
   };
 
   const getIconColor = () => {
-    if (checked && selected) {
-      return "#FFFFFF";
-    }
+    if (checked && selected) return "#FFFFFF";
     return selected ? "#B29F79" : "#D9CFBA";
   };
 
@@ -50,17 +43,14 @@ const AnswerOption: React.FC<AnswerOptionProps> = ({ letter, text, isCorrect, se
       className="elevation-2 my-2 w-full flex-1 flex-row items-center justify-between rounded-xl border border-secondary-200 p-4 shadow-[0px_2px_0px_0px_rgba(0,0,0,0.25)]"
       style={{ backgroundColor: getBackgroundColor() }}
     >
-      {/* Left: Letter + Text */}
       <View className="flex-1 flex-row items-center">
         <Text className="mr-4 font-bold" style={{ color: getTextColor() }}>
           {letter}
         </Text>
         <Text style={{ color: getTextColor() }}>{text}</Text>
       </View>
-
-      {/* Right: Icon */}
       <View className="ml-2">
-        <FontAwesomeIcon icon={getIcon()} size={20} color={getIconColor()} />
+        <Ionicons name={getIconName()} size={20} color={getIconColor()} />
       </View>
     </TouchableOpacity>
   );

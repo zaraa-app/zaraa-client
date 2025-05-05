@@ -105,7 +105,7 @@ const Forums = () => {
     <Animated.View style={[{ flex: 1, paddingTop: 8, opacity: fadeAnim }]}>
       <View style={[styles.gap2, styles.mb4]}>
         <View className="flex-row items-center justify-between" style={[styles.px6]}>
-          <HeadingContent className="flex-1 " size="h5" heading="Forums" />
+          <HeadingContent className="flex-1" size="h5" heading="Forums" />
           <TouchableOpacity
             className="flex-row items-center justify-center"
             style={[styles.gap1]}

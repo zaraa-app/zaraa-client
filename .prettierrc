@@ -13,10 +13,6 @@
   "experimentalTernaries": true,
   "vueIndentScriptAndStyle": true,
   "objectWrap": "preserve",
-  "plugins": [
-    "prettier-plugin-tailwindcss"
-  ],
-  "tailwindAttributes": [
-    "className"
-  ]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindAttributes": ["className"]
 }
