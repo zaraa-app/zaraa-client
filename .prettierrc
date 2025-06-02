@@ -11,5 +11,8 @@
   "tabWidth": 2,
   "trailingComma": "es5",
   "experimentalTernaries": true,
-  "vueIndentScriptAndStyle": true
+  "vueIndentScriptAndStyle": true,
+  "objectWrap": "preserve",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindAttributes": ["className"]
 }

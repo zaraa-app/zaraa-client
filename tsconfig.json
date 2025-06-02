@@ -1,14 +1,18 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "lib": ["es6"],
-    "types": ["react-native"],
+    "target": "es2015",
+    "lib": ["dom", "ES2024"],
+    "jsx": "react-native",
     "strict": true,
-    "checkJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["react", "react-native"],
+    "downlevelIteration": true,
     "paths": {
-      "@/*": ["./*"],
-      "react": ["./node_modules/react"]
+      "@/*": ["./*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts", "declarations.d.ts", "prettier.config.js"]
 }
