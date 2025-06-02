@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { View, Image, Text } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,10 +47,6 @@ const victorySubtexts = [
   "That was *mint*. Ready to leaf into the next lesson?",
 ];
 
-const index = Math.floor(Math.random() * victoryTitles.length);
-const victoryTitle = victoryTitles[index];
-const victorySubtitle = victorySubtexts[index];
-
 export default function LessonQuiz() {
   const { user, setUser } = useGlobalContext();
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
@@ -68,6 +64,16 @@ export default function LessonQuiz() {
   const [showOutOfHeartsModal, setShowOutOfHeartsModal] = useState(false);
   const [retryQueue, setRetryQueue] = useState<LessonQuestionResponse[]>([]);
   const [retryMode, setRetryMode] = useState(false);
+
+  const { image, title, subtitle } = useMemo(() => {
+    const index = Math.floor(Math.random() * victoryTitles.length);
+    const imageIndex = Math.floor(Math.random() * 10) + 1; // 1 to 10
+    return {
+      title: victoryTitles[index],
+      subtitle: victorySubtexts[index],
+      image: `@/assets/images/LessonCompletion/${imageIndex}.png`,
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -199,13 +205,9 @@ export default function LessonQuiz() {
     return (
       <SafeAreaView className="flex-1 bg-white px-6 pt-8">
         <View className="flex-1 items-center justify-center">
-          <Image
-            source={{ uri: "https://picsum.photos/200/200" }} // placeholder
-            className="h-72 w-72"
-            resizeMode="contain"
-          />
-          <TextContent text={victoryTitle} size="xl" className="mb-2 mt-4 text-center font-extrabold text-neutral-1000" />
-          <TextContent text={victorySubtitle} className="mb-4 text-center text-neutral-800" />
+          <Image source={image} className="h-72 w-72" resizeMode="contain" />
+          <TextContent text={title} size="xl" className="mb-2 mt-4 text-center font-extrabold text-neutral-1000" />
+          <TextContent text={subtitle} className="mb-4 text-center text-neutral-800" />
           <View className="mb-6 w-full flex-row items-center justify-center gap-2 rounded-3xl bg-yellow-50 px-6 py-3">
             <Text>⭐</Text>
             <Text className="text-2xl font-black text-yellow-800">{lesson?.xpValue} XP</Text>

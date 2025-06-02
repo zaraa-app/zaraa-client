@@ -27,23 +27,23 @@ const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   useEffect(() => {
     const fetchUser = async () => {
-      setTimeout(async () => {
-        try {
-          const user = await getCurrentUser();
-          if (user) {
-            setIsLoggedIn(true);
-            setUser(user);
-            createUserDailyActivity(user.$id);
-          } else {
-            setIsLoggedIn(false);
-            setUser(null);
-          }
-        } catch (error) {
-          console.log("Error getting current user:", error);
-        } finally {
-          setIsLoading(false);
+      try {
+        const user = await getCurrentUser();
+
+        if (user) {
+          setIsLoggedIn(true);
+          await createUserDailyActivity(user.$id);
+          const refreshedUser = await getCurrentUser();
+          setUser(refreshedUser);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
         }
-      }, 1000);
+      } catch (error) {
+        console.log("Error getting current user:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchUser();

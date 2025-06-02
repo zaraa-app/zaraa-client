@@ -32,13 +32,15 @@ export const getUserDailyActivity = async (userId: string): Promise<UserDailyAct
  * - It creates a new daily activity record for today.
  * - It increments the user's streak.
  */
-export const createUserDailyActivity = async (userId: string) => {
+export const createUserDailyActivity = async (userId: string): Promise<void> => {
   try {
     const todaysDate = new Date();
     const todayStr = formatDateUTC(todaysDate);
     const yesterdayStr = formatDateUTC(new Date(todaysDate.getTime() - 86400000));
 
     const activities = await getUserDailyActivity(userId);
+
+    let shouldResetHearts = false;
 
     if (activities) {
       const hasActivityToday = activities.some((activity) => {
@@ -58,6 +60,8 @@ export const createUserDailyActivity = async (userId: string) => {
       if (!hasActivityYesterday) {
         await resetStreak(userId);
       }
+
+      shouldResetHearts = true;
     }
 
     const userActivity = {
@@ -68,6 +72,10 @@ export const createUserDailyActivity = async (userId: string) => {
 
     await databases.createDocument(config.databaseId, tableIds.userDailyActivity, ID.unique(), userActivity);
     await incrementStreak(userId);
+
+    if (shouldResetHearts) {
+      await databases.updateDocument(config.databaseId, tableIds.users, userId, { hearts: 5 });
+    }
   } catch (error: any) {
     console.error("Error creating user daily activity:", error);
   }

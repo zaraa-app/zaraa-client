@@ -20,7 +20,7 @@ export const ChapterProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        if (!selectedCategory) return; // Wait until category is selected
+        if (!selectedCategory) return;
 
         const data: ChapterResponse[] | undefined = await getChapters(selectedCategory.$id);
 

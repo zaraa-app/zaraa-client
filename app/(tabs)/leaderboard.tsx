@@ -6,10 +6,13 @@ import { getAllUsers } from "@/api/services/user.service";
 import { UserResponse } from "@/api/types/user.types";
 import styles from "@/utils/styles";
 import { useFocusEffect } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Leaderboard = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const insets = useSafeAreaInsets();
 
   useFocusEffect(
     useCallback(() => {
@@ -60,6 +63,7 @@ const Leaderboard = () => {
             </View>
           )}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
         />
       </View>
     </View>
