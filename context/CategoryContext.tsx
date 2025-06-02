@@ -24,7 +24,7 @@ export const CategoryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           setSelectedCategory(JSON.parse(storedCategory));
         }
       } catch (error) {
-        console.error("Error loading category:", error);
+        console.log("Error loading category:", error);
       }
     };
 
@@ -38,7 +38,7 @@ export const CategoryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           await AsyncStorage.setItem("selectedCategory", JSON.stringify(selectedCategory));
         }
       } catch (error) {
-        console.error("Error saving category:", error);
+        console.log("Error saving category:", error);
       }
     };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { router } from "expo-router";
-import { Animated, Dimensions, ScrollView, View } from "react-native";
+import { Animated, Dimensions, ScrollView, View, Image } from "react-native";
 import ChapterSelect from "@/components/ChapterSelect";
 import LessonButton from "@/components/LessonButton";
 import { ELessonStatus, UserLessonProgressResponse } from "@/api/types/userLessonProgress.types";
@@ -16,7 +16,6 @@ import TextContent from "@/components/TextContent";
 import PageLoader from "@/components/PageLoader/PageLoader";
 import { useChapter } from "@/context/ChapterContext";
 import { ChapterResponse } from "@/api/types/chapter.types";
-import ActionButton from "@/components/ActionButton";
 
 const Dashboard = () => {
   const { isLoggedIn, user } = useGlobalContext();
@@ -237,12 +236,17 @@ const Dashboard = () => {
       )}
       <Animated.View className="flex-1" style={[styles.pb6, { marginBottom: normalize(92), opacity: fadeAnim }]}>
         {lessons.length === 0 ?
-          <View className="flex-1 items-center justify-center">
+          <View className="flex-1 items-center justify-center px-6">
+            <Image
+              source={require("@/assets/images/empty-lessons.png")}
+              style={{ width: normalize(200), height: normalize(200), marginBottom: normalize(16) }}
+              resizeMode="contain"
+            />
+            <TextContent size="xl" text="No Lessons Found" className="mb-2 text-center font-extrabold text-neutral-900" />
             <TextContent
-              size="lg"
-              text="No lessons found..."
-              className="rounded-full bg-primary-300 font-bold italic text-white"
-              style={[styles.p8]}
+              size="base"
+              text="We couldn't find any lessons in this category. Try selecting another plant category!"
+              className="mb-4 text-center text-neutral-600"
             />
           </View>
         : <>

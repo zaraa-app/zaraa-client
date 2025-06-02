@@ -38,7 +38,7 @@ export const ChapterProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setSelectedChapter(sortedChapters[0]);
         }
       } catch (error) {
-        console.error("Error fetching chapters:", error);
+        console.log("Error fetching chapters:", error);
       }
     };
 

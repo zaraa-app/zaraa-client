@@ -47,6 +47,19 @@ const victorySubtexts = [
   "That was *mint*. Ready to leaf into the next lesson?",
 ];
 
+const lessonImages = [
+  require("@/assets/images/LessonCompletion/1.png"),
+  require("@/assets/images/LessonCompletion/2.png"),
+  require("@/assets/images/LessonCompletion/3.png"),
+  require("@/assets/images/LessonCompletion/4.png"),
+  require("@/assets/images/LessonCompletion/5.png"),
+  require("@/assets/images/LessonCompletion/6.png"),
+  require("@/assets/images/LessonCompletion/7.png"),
+  require("@/assets/images/LessonCompletion/8.png"),
+  require("@/assets/images/LessonCompletion/9.png"),
+  require("@/assets/images/LessonCompletion/10.png"),
+];
+
 export default function LessonQuiz() {
   const { user, setUser } = useGlobalContext();
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
@@ -71,7 +84,7 @@ export default function LessonQuiz() {
     return {
       title: victoryTitles[index],
       subtitle: victorySubtexts[index],
-      image: `@/assets/images/LessonCompletion/${imageIndex}.png`,
+      image: lessonImages[index],
     };
   }, []);
 
