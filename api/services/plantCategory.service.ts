@@ -31,6 +31,7 @@ export const getCategories = async (): Promise<PlantCategory[] | undefined> => {
 export const getCategoryIcon = (category: PlantCategory): any => {
   switch (category.name) {
     case "Cacti":
+    case "Cactus":
       return CactusIcon;
     case "Succulents":
       return SucculentIcon;

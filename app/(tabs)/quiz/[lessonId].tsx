@@ -86,7 +86,7 @@ export default function LessonQuiz() {
       subtitle: victorySubtexts[index],
       image: lessonImages[index],
     };
-  }, []);
+  }, [lessonId]);
 
   useFocusEffect(
     useCallback(() => {
